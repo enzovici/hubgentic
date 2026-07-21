@@ -1,0 +1,63 @@
+# hubgentic ontology — schema v0.1
+# Four top-level sections: ontology (meta), sources, entities, bindings.
+ontology:
+  name: financial-services-core
+  version: 0.1.0
+
+sources: # registry of federated systems; adapter = import path
+  core_banking:
+    kind: mock # later: sap | jdbc | mcp | rest ...
+    adapter: hubgentic.sources.mock_core_banking:MockCoreBankingAdapter
+    description: Core banking system of record (CIF master).
+  crm:
+    kind: mock
+    adapter: hubgentic.sources.mock_crm:MockCrmAdapter
+    description: Salesforce-shaped CRM.
+
+entities:
+  Counterparty:
+    description: A client/counterparty (individual or legal entity).
+    attributes: # shorthand `name: {type: ...}`; optional unless required: true
+      party_type:
+        type: enum
+        values: [individual, legal_entity]
+        required: true
+      legal_name: {type: string, required: true, identifying: true, normalizer: person_or_org_name}
+      national_tax_code: {type: string, identifying: true, normalizer: tax_code}
+      lei: {type: string, identifying: true, normalizer: lei}
+      date_of_birth: {type: date, identifying: true, applies_to: [individual]}
+      incorporation_date: {type: date, applies_to: [legal_entity]}
+      email: {type: string, identifying: true, normalizer: email}
+    relationships:
+      controls: # beneficial owner / control link
+        target: Counterparty
+        cardinality: many_to_many
+        description: Controlling/beneficial-ownership link between counterparties.
+
+bindings: # per entity, per source: how ontology attrs map to native
+  Counterparty: # objects/fields. Binding ORDER here is the explicit
+    core_banking: # canonical-merge preference order.
+      object: CIF
+      key_fields: [CIF_ID]
+      fields: # shorthand attr: FIELD, or expanded with transform
+        party_type: {source_field: CUST_TYPE, transform: map, mapping: {P: individual, O: legal_entity}}
+        legal_name: NAME_TXT
+        national_tax_code: TAX_CODE
+        lei: LEI_CODE
+        date_of_birth: BIRTH_DT
+        incorporation_date: INCORP_DT
+        email: EMAIL_ADDR
+      relationships:
+        # CONTROLLING_CIF_ID names the counterparty that CONTROLS this record,
+        # so the edge is inbound: referenced record --controls--> this record.
+        controls: {source_field: CONTROLLING_CIF_ID, references: CIF_ID, direction: inbound}
+    crm:
+      object: Account
+      key_fields: [Id]
+      fields:
+        legal_name: Name
+        national_tax_code: TaxCode__c
+        date_of_birth: Birth_Date__c
+        email: Email__c
+        party_type: {source_field: Type, transform: map, mapping: {Person: individual, Business: legal_entity}}
+        # no LEI in the CRM — absence is legitimate and drives the fuzzy-match cases

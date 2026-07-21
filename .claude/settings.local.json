@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:modelcontextprotocol.github.io)",
+      "WebFetch(domain:py.sdk.modelcontextprotocol.io)",
+      "Bash(uv sync *)",
+      "Bash(uv run *)",
+      "Bash(xxd .venv/lib/python3.12/site-packages/_editable_impl_hubgentic.pth)",
+      "Bash(./.venv/bin/python -c \"import hubgentic; print\\('direct venv python OK:', hubgentic.__file__\\)\")",
+      "Bash(./.venv/bin/python -c ' *)"
+    ]
+  }
+}
