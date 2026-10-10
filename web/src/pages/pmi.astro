@@ -1,0 +1,650 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { TITLE, DESCRIPTION, PAGE_URL, SITE_URL, MEMO_PDF, SOURCES, FAQ, HAS_LOGO } from '../data/site';
+
+const keyNumbers = [
+  { value: '3 settimane', label: 'per un processo funzionante' },
+  { value: '10 giorni', label: 'per la prima demo' },
+  { value: '2–3 giorni', label: 'a settimana da voi' },
+  { value: '1 referente', label: 'interno formato da noi' },
+];
+
+const stats = [
+  {
+    value: '15,7%',
+    text: "delle PMI italiane usa già almeno uno strumento di intelligenza artificiale. Tra le grandi aziende è il 53,1%.",
+    source: SOURCES.istat,
+  },
+  {
+    value: 'Quasi 6 su 10',
+    text: 'tra le aziende che ci hanno pensato e poi hanno rinunciato indicano come motivo la mancanza di competenze interne.',
+    source: SOURCES.istat,
+  },
+  {
+    value: '+11,9%',
+    text: "di margine operativo lordo per addetto, associato all'uso dell'AI nelle imprese con almeno 50 addetti.",
+    source: SOURCES.bankitalia,
+  },
+];
+
+const useCases = [
+  {
+    icon: 'orders',
+    title: 'Ordini e documenti',
+    text: 'Gli ordini via email o PDF entrano da soli nel gestionale. Meno battitura, meno errori, clienti serviti prima.',
+  },
+  {
+    icon: 'quotes',
+    title: 'Preventivi e offerte',
+    text: "Una bozza di preventivo in pochi minuti, da listini e storico. L'ultima parola resta al vostro commerciale.",
+  },
+  {
+    icon: 'admin',
+    title: 'Amministrazione e assistenza',
+    text: 'Fatture e DDT controllati in automatico, solleciti pronti, richieste dei clienti girate alla persona giusta.',
+  },
+];
+
+const steps = [
+  { n: '01', title: 'Primo incontro', text: "Un'ora, senza impegno, per capire dove perdete più tempo." },
+  { n: '02', title: 'Diagnosi', text: 'Due settimane a prezzo fisso: dati e risparmio atteso, nero su bianco.' },
+  { n: '03', title: 'Prima demo', text: 'Entro 10 giorni vedete il sistema lavorare sui vostri dati.' },
+  { n: '04', title: 'In funzione', text: 'In circa 3 settimane lavora ogni giorno con il vostro gestionale.' },
+  { n: '05', title: 'Assistenza', text: 'Lo seguiamo nel tempo e formiamo un vostro referente interno.' },
+];
+
+const partnerPoints = [
+  'Condizioni economiche riservate alle aziende partner.',
+  'Una quota dei ricavi se una soluzione nata con voi serve ad altre aziende, mai vostre concorrenti.',
+  'I vostri dati restano vostri, conservati in Europa e mai riutilizzati.',
+  "Verifichiamo con il vostro commercialista gli incentivi, come l'iperammortamento 2026.",
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Hubgentic',
+    url: PAGE_URL,
+    ...(HAS_LOGO ? { logo: `${SITE_URL}/img/logo-full.png` } : {}),
+    description:
+      "Hubgentic porta l'intelligenza artificiale nelle PMI italiane, con ingegneri che lavorano dentro l'azienda cliente.",
+    areaServed: { '@type': 'Country', name: 'Italia' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQ.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Base title={TITLE} description={DESCRIPTION} canonical={PAGE_URL} jsonLd={jsonLd}>
+  <!-- Hero -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <p class="eyebrow">Intelligenza artificiale per le PMI</p>
+        <h1 id="hero-title">L'AI che lavora davvero nella vostra azienda</h1>
+        <p class="lead">
+          Per PMI da 10 a 250 dipendenti. I nostri ingegneri lavorano da voi, accanto a chi fa il lavoro, finché il
+          processo funziona sui programmi che usate ogni giorno.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#contatti">Prenota un primo incontro</a>
+          <a class="pdf-link" href={MEMO_PDF} download>
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 19h14"></path></svg>
+            <span>Scarica la sintesi in PDF</span>
+          </a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 360 300" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <!-- documents arriving -->
+          <g stroke="#2E6E73" stroke-width="2">
+            <rect x="20" y="40" width="88" height="110" rx="6" fill="#FFFFFF"></rect>
+            <path d="M38 70h52M38 88h52M38 106h36"></path>
+            <rect x="34" y="160" width="88" height="70" rx="6" fill="#FFFFFF"></rect>
+            <path d="M34 166l44 32 44-32"></path>
+          </g>
+          <!-- flow -->
+          <g stroke="#C8A24A" stroke-width="2">
+            <path d="M118 95c40 0 50 50 90 50" stroke-dasharray="4 6"></path>
+            <path d="M130 195c34 0 44-40 78-40" stroke-dasharray="4 6"></path>
+            <circle cx="208" cy="148" r="6" fill="#C8A24A"></circle>
+          </g>
+          <!-- management software window -->
+          <g stroke="#0E1B2A" stroke-width="2">
+            <rect x="214" y="70" width="126" height="160" rx="8" fill="#FFFFFF"></rect>
+            <path d="M214 96h126"></path>
+            <circle cx="230" cy="83" r="3"></circle>
+            <circle cx="242" cy="83" r="3"></circle>
+            <path d="M232 120h70M232 142h88M232 164h56M232 186h76"></path>
+          </g>
+          <g stroke="#2E6E73" stroke-width="2.4">
+            <circle cx="318" cy="208" r="16" fill="#F6F3EC"></circle>
+            <path d="m310 208 6 6 10-12"></path>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key numbers -->
+  <section class="numbers on-navy" aria-label="Il nostro metodo in numeri">
+    <div class="container">
+      <ul class="numbers-list">
+        {
+          keyNumbers.map((k) => (
+            <li>
+              <span class="num">{k.value}</span>
+              <span class="num-label">{k.label}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Perché adesso -->
+  <section class="section warm" aria-labelledby="perche-title">
+    <div class="container">
+      <h2 id="perche-title">Perché adesso</h2>
+      <ul class="cards cards-3 stats">
+        {
+          stats.map((s) => (
+            <li class="card">
+              <p class="stat-value">{s.value}</p>
+              <p>{s.text}</p>
+              <p class="source">
+                Fonte:{' '}
+                <a href={s.source.href}>
+                  {s.source.label}
+                  {'via' in s.source && <span class="via"> (via {s.source.via})</span>}
+                </a>
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Cosa possiamo fare per voi -->
+  <section class="section" id="cosa-facciamo" aria-labelledby="cosa-title">
+    <div class="container">
+      <h2 id="cosa-title">Cosa possiamo fare per voi</h2>
+      <ul class="cards cards-3 uses">
+        {
+          useCases.map((u) => (
+            <li class="card">
+              <span class="icon" aria-hidden="true">
+                {u.icon === 'orders' && (
+                  <svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="6" y="10" width="26" height="20" rx="3" />
+                    <path d="m6 12 13 9 13-9" />
+                    <path d="M24 34h16M34 28l6 6-6 6" />
+                  </svg>
+                )}
+                {u.icon === 'quotes' && (
+                  <svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 6h18l8 8v28H12z" />
+                    <path d="M30 6v8h8" />
+                    <path d="M18 22h14M18 28h14M18 34h8" />
+                  </svg>
+                )}
+                {u.icon === 'admin' && (
+                  <svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="8" y="8" width="32" height="32" rx="3" />
+                    <path d="m14 18 3 3 5-6M14 30l3 3 5-6" />
+                    <path d="M27 19h8M27 31h8" />
+                  </svg>
+                )}
+              </span>
+              <h3>{u.title}</h3>
+              <p>{u.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Come lavoriamo -->
+  <section class="section cool" id="come-lavoriamo" aria-labelledby="come-title">
+    <div class="container">
+      <h2 id="come-title">Come lavoriamo</h2>
+      <ol class="steps">
+        {
+          steps.map((s) => (
+            <li>
+              <span class="step-n" aria-hidden="true">{s.n}</span>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="small-print">Tempi indicativi, da confermare con la Diagnosi.</p>
+    </div>
+  </section>
+
+  <!-- Chi siamo -->
+  <section class="section" id="chi-siamo" aria-labelledby="chi-title">
+    <div class="container about">
+      <h2 id="chi-title">Chi siamo</h2>
+      <p>
+        Hubgentic porta l'intelligenza artificiale nelle PMI italiane, senza che dobbiate assumere un reparto
+        informatico. I nostri ingegneri lavorano dentro la vostra azienda, accanto a chi fa il lavoro, finché il sistema
+        funziona davvero sui programmi che usate ogni giorno. Il team ha già portato con successo l'AI nelle grandi
+        aziende e vuole estenderla alle PMI.
+      </p>
+    </div>
+  </section>
+
+  <!-- Aziende partner -->
+  <section class="section partner-section" id="aziende-partner" aria-labelledby="partner-title">
+    <div class="container">
+      <div class="partner-box">
+        <h2 id="partner-title">Cerchiamo le prime aziende partner</h2>
+        <p class="partner-intro">
+          Stiamo scegliendo poche PMI con cui costruire le prime soluzioni, decidendo insieme cosa fare.
+        </p>
+        <ul class="ticks">
+          {
+            partnerPoints.map((p) => (
+              <li>
+                <svg aria-hidden="true" viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m4 10.5 4 4 8-9" />
+                </svg>
+                <span>{p}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <a class="btn btn-teal" href="#contatti" data-partner-cta>Candida la vostra azienda</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Domande -->
+  <section class="section cool" id="domande" aria-labelledby="faq-title">
+    <div class="container faq-wrap">
+      <h2 id="faq-title">Domande</h2>
+      <div class="faq">
+        {
+          FAQ.map((f) => (
+            <details>
+              <summary>
+                <h3>{f.q}</h3>
+                <svg class="chev" aria-hidden="true" viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m5 8 5 5 5-5" />
+                </svg>
+              </summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Contatti -->
+  <section class="contact on-navy" id="contatti" aria-labelledby="contatti-title">
+    <div class="container contact-grid">
+      <div class="contact-intro">
+        <h2 id="contatti-title">Prenotate un primo incontro</h2>
+        <p class="contact-line">Un'ora, senza impegno, anche in azienda.</p>
+        <p class="contact-name">Enzo Vicidomini · Hubgentic</p>
+      </div>
+      <ContactForm />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .section {
+    padding-block: var(--section-y);
+  }
+  .section h2 {
+    margin-bottom: 32px;
+  }
+  .warm {
+    background: var(--warm);
+  }
+  .cool {
+    background: var(--cool);
+  }
+
+  /* Hero */
+  .hero {
+    padding-block: 48px 56px;
+  }
+  .hero-grid {
+    display: grid;
+    gap: 40px;
+    align-items: center;
+  }
+  .eyebrow {
+    color: var(--teal);
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .lead {
+    font-size: 1.1875rem;
+    margin-top: 20px;
+    max-width: 38em;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 28px;
+    margin-top: 32px;
+  }
+  .pdf-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-weight: 700;
+  }
+  .hero-art {
+    display: none;
+  }
+  @media (min-width: 900px) {
+    .hero {
+      padding-block: 80px 88px;
+    }
+    .hero-grid {
+      grid-template-columns: 1.35fr 1fr;
+      gap: 56px;
+    }
+    .hero-art {
+      display: block;
+      background: var(--warm);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+    }
+  }
+
+  /* Numbers strip */
+  .numbers {
+    background: var(--navy);
+    color: var(--white);
+    padding-block: 32px;
+  }
+  .numbers-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 20px;
+  }
+  .numbers-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-left: 2px solid var(--gold);
+    padding-left: 14px;
+  }
+  .num {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(1.375rem, 4vw + 0.5rem, 1.625rem);
+    line-height: 1.15;
+    color: var(--gold-light);
+  }
+  .num-label {
+    color: #dfe5ea;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+  }
+  @media (min-width: 900px) {
+    .numbers {
+      padding-block: 40px;
+    }
+    .numbers-list {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+    }
+    .num {
+      font-size: 2rem;
+    }
+  }
+
+  /* Cards */
+  .cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 20px;
+  }
+  @media (min-width: 800px) {
+    .cards-3 {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+  }
+  .card {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .stat-value {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 2.5rem;
+    line-height: 1.1;
+    color: var(--teal);
+  }
+  .source {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+  .source a {
+    display: inline-block;
+    padding-block: 4px;
+  }
+  .uses .card {
+    background: var(--cool);
+    border-color: transparent;
+    border-top: 3px solid var(--teal);
+  }
+  .icon {
+    color: var(--teal);
+  }
+
+  /* Steps */
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+  }
+  .steps li {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    padding: 22px 22px 24px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 16px;
+    row-gap: 6px;
+  }
+  .step-n {
+    grid-row: span 2;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--teal);
+    padding-top: 2px;
+  }
+  .steps h3 {
+    font-size: 1.1875rem;
+  }
+  .steps p {
+    font-size: 1rem;
+  }
+  @media (min-width: 960px) {
+    .steps {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+    .steps li {
+      grid-template-columns: 1fr;
+      border-top: 3px solid var(--gold);
+    }
+    .step-n {
+      grid-row: auto;
+      margin-bottom: 8px;
+    }
+  }
+  .small-print {
+    margin-top: 20px;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* About */
+  .about p {
+    font-size: 1.1875rem;
+    max-width: 44em;
+  }
+
+  /* Partner */
+  .partner-section {
+    padding-top: 0;
+  }
+  .partner-box {
+    background: var(--warm);
+    border: 1px solid #e7e0cf;
+    border-left: 4px solid var(--gold);
+    border-radius: var(--radius-lg);
+    padding: 32px 22px;
+  }
+  .partner-box h2 {
+    margin-bottom: 16px;
+  }
+  .partner-intro {
+    font-size: 1.125rem;
+    max-width: 40em;
+  }
+  .ticks {
+    list-style: none;
+    margin: 24px 0 32px;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .ticks li {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  .ticks svg {
+    color: var(--teal);
+    margin-top: 4px;
+  }
+  @media (min-width: 800px) {
+    .partner-box {
+      padding: 48px 56px;
+    }
+    .ticks {
+      grid-template-columns: 1fr 1fr;
+      gap: 18px 40px;
+    }
+  }
+
+  /* FAQ */
+  .faq {
+    max-width: 860px;
+    border-top: 1px solid var(--rule);
+  }
+  details {
+    border-bottom: 1px solid var(--rule);
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary h3 {
+    font-size: 1.1875rem;
+  }
+  summary:hover h3 {
+    color: var(--teal);
+  }
+  .chev {
+    flex-shrink: 0;
+    color: var(--teal);
+    transition: transform 0.2s ease;
+  }
+  details[open] .chev {
+    transform: rotate(180deg);
+  }
+  details p {
+    padding: 0 0 22px;
+    max-width: 44em;
+  }
+
+  /* Contact */
+  .contact {
+    background: var(--navy);
+    color: #dfe5ea;
+    padding-block: var(--section-y);
+  }
+  .contact h2 {
+    color: var(--white);
+  }
+  .contact-grid {
+    display: grid;
+    gap: 32px;
+  }
+  .contact-line {
+    font-size: 1.1875rem;
+    margin-top: 16px;
+    color: var(--white);
+  }
+  .contact-name {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(228, 200, 120, 0.5);
+    color: var(--gold-light);
+    font-weight: 700;
+  }
+  @media (min-width: 900px) {
+    .contact-grid {
+      grid-template-columns: 1fr 1.4fr;
+      gap: 64px;
+      align-items: start;
+    }
+  }
+</style>
