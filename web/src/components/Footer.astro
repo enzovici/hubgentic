@@ -1,0 +1,59 @@
+---
+import { LEGAL, SOURCES } from '../data/site';
+
+const hasLegal = LEGAL.ragioneSociale && LEGAL.partitaIva;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container inner">
+    <div class="row">
+      <a href="/pmi">agentic.ai/pmi</a>
+      <span aria-hidden="true">·</span>
+      <a href="/privacy">Privacy</a>
+    </div>
+    <p class="legal">
+      {
+        hasLegal ? (
+          <>
+            © {year} {LEGAL.ragioneSociale}
+            {LEGAL.sedeLegale && ` · ${LEGAL.sedeLegale}`} · P.IVA {LEGAL.partitaIva}
+          </>
+        ) : (
+          /* TODO(legal): set ragione sociale, sede legale and P.IVA in src/data/site.ts. Required by Italian law. */
+          <span class="todo">TODO: ragione sociale, sede legale e P.IVA</span>
+        )
+      }
+    </p>
+    <p class="sources">
+      Fonti dei dati: <a href={SOURCES.istat.href}>ISTAT, Imprese e ICT, anno 2025</a>;
+      <a href={SOURCES.bankitalia.href}>{SOURCES.bankitalia.label}, ripreso da {SOURCES.bankitalia.via}</a>.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--warm);
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+  .inner {
+    display: grid;
+    gap: 10px;
+    padding-block: 32px;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .row a {
+    color: var(--ink);
+    padding-block: 4px;
+  }
+  .sources a {
+    color: var(--teal);
+  }
+</style>
