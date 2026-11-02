@@ -51,5 +51,6 @@ site-dev:
 deploy-site: site
 	@git diff --quiet HEAD -- site || { echo "Uncommitted changes in site/ — commit before deploying."; exit 1; }
 	rsync -rlz --delete site/dist/ $(DEPLOY_HOST):$(SITE_DIR)/
-	@curl -sf -o /dev/null https://www.hubgentic.ai/ && echo "✓ https://www.hubgentic.ai is up on $$(git rev-parse --short HEAD)" \
+	@curl -sf https://www.hubgentic.ai/ | grep -q "/assets/site.css?v=" \
+		&& echo "✓ https://www.hubgentic.ai is serving this build ($$(git rev-parse --short HEAD))" \
 		|| echo "Uploaded to $(DEPLOY_HOST):$(SITE_DIR); www.hubgentic.ai is not serving it yet (DNS or Caddy)."
