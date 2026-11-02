@@ -34,7 +34,10 @@ www.hubgentic.ai {
 		}
 		@versioned path /assets/site.css /assets/site.js
 		header @versioned Cache-Control "public, max-age=31536000, immutable"
-		@static path /assets/*
+		@static {
+			path /assets/*
+			not path /assets/site.css /assets/site.js
+		}
 		header @static Cache-Control "public, max-age=604800"
 
 		# Paths from the previous (Lovable) site.
