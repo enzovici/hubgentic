@@ -32,7 +32,9 @@ document.addEventListener("click", (e) => {
     list.querySelectorAll("[role=tab]").forEach((t) => {
       const on = t === tab;
       t.setAttribute("aria-selected", on);
-      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+      const panel = document.getElementById(t.getAttribute("aria-controls"));
+      panel.hidden = !on;
+      if (on) panel.dispatchEvent(new CustomEvent("tab:shown", { bubbles: true }));
     });
   }
   // Close workspace menu when clicking elsewhere.

@@ -1,0 +1,11 @@
+{# Interactive graph; `graph` is a list of Cytoscape.js elements. #}
+<div class="graph-wrap">
+  <div class="graph" data-graph="{{ graph_id }}" data-layout="{{ layout }}" role="img" aria-label="{{ label }}"></div>
+  <div class="graph-bar">
+    <div class="graph-legend">{% for k, v in legend %}<span class="lg lg-{{ k }}">{{ v }}</span>{% endfor %}</div>
+    <button class="btn btn-ghost btn-sm" type="button" data-graph-fit="{{ graph_id }}">Fit</button>
+  </div>
+  <div class="graph-info small muted" data-graph-info="{{ graph_id }}">Click a node or edge for details · scroll to zoom · drag to rearrange</div>
+  <noscript><p class="faint small">The graph view needs JavaScript; the tables show the same data.</p></noscript>
+</div>
+<script id="{{ graph_id }}" type="application/json">{{ graph | tojson }}</script>

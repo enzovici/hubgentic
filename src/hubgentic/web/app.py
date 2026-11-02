@@ -28,6 +28,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from hubgentic.federation.orchestrator import EntityNotFoundError
 from hubgentic.lineage.render import render_lineage_tree
 from hubgentic.web import security as sec
+from hubgentic.web.graphs import entity_graph, ontology_graph
 from hubgentic.web.db import Database, default_db_path, now
 from hubgentic.web.tenancy import TenantRuntimes
 
@@ -112,6 +113,11 @@ def create_app(
             response.headers.setdefault("X-Frame-Options", "DENY")
             response.headers.setdefault("X-Content-Type-Options", "nosniff")
             response.headers.setdefault("Referrer-Policy", "same-origin")
+            if secure_cookies:
+                # Only meaningful (and only safe) when served over HTTPS.
+                response.headers.setdefault(
+                    "Strict-Transport-Security", "max-age=31536000; includeSubDomains"
+                )
             if not request.url.path.startswith("/api/docs"):
                 response.headers.setdefault(
                     "Content-Security-Policy",
@@ -529,17 +535,19 @@ def create_app(
 
         result = error = None
         lineage = ""
+        graph_els: list[dict] = []
         if criteria:
             result, error = await run_query(
                 tenant["id"], entity_type, criteria, actor=user["email"], channel="web"
             )
             if result is not None:
                 lineage = render_lineage_tree(result)
+                graph_els = entity_graph(result)
         return render(
             request, "app/explore.html", user=user, tenant=tenant, nav="explore",
             entity_types=entity_types, entity_type=entity_type, attrs=attrs,
             query_attrs=query_attrs, criteria=criteria, result=result, error=error,
-            lineage=lineage, examples=EXAMPLES,
+            lineage=lineage, graph=graph_els, examples=EXAMPLES,
             sources=graph.sources(),
         )
 
@@ -585,6 +593,7 @@ def create_app(
         return render(
             request, "app/ontology.html", user=user, tenant=tenant, nav="ontology",
             entities=entities, yaml_text=yaml_text,
+            graph=ontology_graph(entities, db.disabled_sources(tenant["id"])),
         )
 
     @app.get("/app/{slug}/sources")

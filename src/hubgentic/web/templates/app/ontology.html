@@ -1,11 +1,20 @@
 {% extends "app/_shell.html" %}
 {% block title %}Ontology · {{ tenant.name }}{% endblock %}
 {% block crumb %}Ontology{% endblock %}
+{% block head_scripts %}<script src="/static/cytoscape-3.34.4.min.js" defer></script><script src="/static/graph.js" defer></script>{% endblock %}
 {% block content %}
 <div class="stack">
   <div class="page-head" style="margin:0">
     <h1>Ontology</h1>
     <p>The vendor-neutral model your agents reason over, and how each attribute binds to native fields in every source. Binding order is the explicit canonical-merge policy — the only place source preference exists.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head spread"><h2>Graph</h2><span class="faint small">entity types → attributes → native source fields</span></div>
+    {% with graph_id="ontology-graph", layout="columns", label="Graph of entity types, attributes, relationships and source bindings",
+            legend=[("entity", "entity type"), ("attribute", "attribute"), ("identifying", "identifying attribute"), ("source", "source system")] %}
+    {% include "app/_graph.html" %}
+    {% endwith %}
   </div>
 
   {% for e in entities %}

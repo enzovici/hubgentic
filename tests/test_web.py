@@ -200,3 +200,30 @@ def test_feedback_and_admin_console(app):
     nobody = client(app)
     signup(nobody, "rando@example.com", "Rando")
     assert nobody.get("/admin").status_code == 404
+
+
+def test_hsts_only_when_secure(tmp_path, app):
+    assert "strict-transport-security" not in client(app).get("/").headers
+    secure = create_app(tmp_path / "s.db", secure_cookies=True, simulated_latency_s=0.0)
+    hsts = TestClient(secure, base_url="https://testserver").get("/").headers["strict-transport-security"]
+    assert "max-age=31536000" in hsts
+
+
+def test_graph_payloads(app):
+    import json
+
+    c = client(app)
+    slug = slug_of(signup(c, "ana@example.com"))
+
+    def elements(html: str, gid: str) -> list[dict]:
+        raw = re.search(rf'<script id="{gid}" type="application/json">(.*?)</script>', html, re.S).group(1)
+        return [e["data"] for e in json.loads(raw)]
+
+    els = elements(c.get(f"/app/{slug}/explore?legal_name=Lucia+Bianchi").text, "entity-graph")
+    kinds = {e["kind"] for e in els}
+    assert {"entity", "record", "member", "match"} <= kinds
+    ids = {e["id"] for e in els}
+    assert all(e["source"] in ids and e["target"] in ids for e in els if "target" in e)
+
+    onto = elements(c.get(f"/app/{slug}/ontology").text, "ontology-graph")
+    assert {"entity", "attribute", "source", "binding", "rel"} <= {e["kind"] for e in onto}

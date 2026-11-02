@@ -1,6 +1,7 @@
 {% extends "app/_shell.html" %}
 {% block title %}Explorer · {{ tenant.name }}{% endblock %}
 {% block crumb %}Explorer{% endblock %}
+{% block head_scripts %}{% if result %}<script src="/static/cytoscape-3.34.4.min.js" defer></script><script src="/static/graph.js" defer></script>{% endif %}{% endblock %}
 {% macro src(ref_source) -%}
 <span class="src-tag src-{{ ref_source }}"><span class="dot"></span>{{ ref_source }}</span>
 {%- endmacro %}
@@ -78,6 +79,7 @@
 
     <div class="tabs" role="tablist">
       <button role="tab" aria-selected="true" aria-controls="tab-fields">Unified fields</button>
+      <button role="tab" aria-selected="false" aria-controls="tab-graph">Graph</button>
       <button role="tab" aria-selected="false" aria-controls="tab-resolution">Resolution ({{ res.supporting_matches | length + res.other_candidates | length }})</button>
       <button role="tab" aria-selected="false" aria-controls="tab-lineage">Lineage tree</button>
       <button role="tab" aria-selected="false" aria-controls="tab-json">JSON</button>
@@ -123,6 +125,13 @@
         {% endfor %}
         </tbody>
       </table></div>
+    </div>
+
+    <div id="tab-graph" role="tabpanel" hidden>
+      {% with graph_id="entity-graph", layout="concentric", label="Graph of the resolved entity, its source records, match rules and relationships",
+              legend=[("entity", "resolved entity"), ("record", "source record"), ("related", "related entity"), ("excluded", "excluded candidate")] %}
+      {% include "app/_graph.html" %}
+      {% endwith %}
     </div>
 
     <div id="tab-resolution" role="tabpanel" hidden>
