@@ -1,0 +1,1 @@
+{% if q.status == 'ok' %}<span class="badge badge-ok"><span class="dot"></span>resolved</span>{% elif q.status == 'not_found' %}<span class="badge badge-warn"><span class="dot"></span>no match</span>{% else %}<span class="badge badge-err"><span class="dot"></span>error</span>{% endif %}

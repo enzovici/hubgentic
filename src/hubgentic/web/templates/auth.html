@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block feedback %}{% endblock %}
+{% block body %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <a class="brand" href="/" style="justify-content:center;margin-bottom:22px"><span class="logo">{% include "_logo.svg" %}</span>hubgentic</a>
+    <div class="card"><div class="card-pad stack">
+      {% if errors %}<div class="alert alert-error" role="alert"><ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>{% endif %}
+      {% block card %}{% endblock %}
+    </div></div>
+    {% block below %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

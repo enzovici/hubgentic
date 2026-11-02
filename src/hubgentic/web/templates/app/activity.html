@@ -1,0 +1,35 @@
+{% extends "app/_shell.html" %}
+{% block title %}Audit log · {{ tenant.name }}{% endblock %}
+{% block crumb %}Audit log{% endblock %}
+{% block content %}
+<div class="stack">
+  <div class="page-head" style="margin:0">
+    <h1>Audit log</h1>
+    <p>Every entity lookup in this workspace — from people in the UI and agents via API keys. Re-run any query to inspect its lineage.</p>
+  </div>
+  <div class="card">
+    {% if rows %}
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>When</th><th>Actor</th><th>Channel</th><th>Query</th><th>Status</th><th>Records</th><th>Latency</th><th></th></tr></thead>
+      <tbody>
+      {% for q in rows %}
+      {% set crit = q.criteria | fromjson %}
+      <tr>
+        <td class="nowrap faint" title="{{ q.created_at }}">{{ q.created_at | ago }}</td>
+        <td>{{ q.actor }}</td>
+        <td><span class="badge">{{ q.channel }}</span></td>
+        <td class="mono small">{{ q.entity_type }} {% for k, v in crit.items() %}<span class="faint">{{ k }}=</span>{{ v }} {% endfor %}</td>
+        <td>{% include "app/_status.html" %}</td>
+        <td>{{ q.records }}</td>
+        <td class="mono small">{{ q.duration_ms }} ms</td>
+        <td><a class="btn btn-ghost btn-sm" href="{{ base }}/explore?entity={{ q.entity_type | urlencode }}{% for k, v in crit.items() %}&{{ k | urlencode }}={{ v | urlencode }}{% endfor %}">Re-run</a></td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    <div class="empty">Nothing yet. Queries from the Explorer and the API show up here.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "auth.html" %}
+{% block title %}New workspace · hubgentic{% endblock %}
+{% block card %}
+<div>
+  <h1>New workspace</h1>
+  <p class="muted" style="margin-top:6px">Each workspace has its own members, API keys, source governance and audit log.</p>
+</div>
+<form method="post" action="/app/new">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <div class="field">
+    <label for="name">Workspace name</label>
+    <input id="name" name="name" type="text" required autofocus placeholder="Acme Bank — Retail">
+  </div>
+  <div class="field"><button class="btn btn-primary btn-block btn-lg" type="submit">Create workspace</button></div>
+</form>
+{% endblock %}
+{% block below %}
+{% if tenants %}<p class="muted small" style="text-align:center;margin-top:16px"><a href="/app">← Back to {{ tenants[0].name }}</a></p>{% endif %}
+{% endblock %}

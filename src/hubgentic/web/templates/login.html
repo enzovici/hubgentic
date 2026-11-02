@@ -1,0 +1,24 @@
+{% extends "auth.html" %}
+{% block title %}Log in · hubgentic{% endblock %}
+{% block card %}
+<div>
+  <h1>Welcome back</h1>
+  <p class="muted" style="margin-top:6px">Log in to your workspace.</p>
+</div>
+<form method="post" action="/login">
+  <input type="hidden" name="next" value="{{ next }}">
+  <input type="hidden" name="invite" value="{{ invite }}">
+  <div class="field">
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" value="{{ form.email or '' }}" autocomplete="email" required autofocus>
+  </div>
+  <div class="field">
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" autocomplete="current-password" required>
+  </div>
+  <div class="field"><button class="btn btn-primary btn-block btn-lg" type="submit">Log in</button></div>
+</form>
+{% endblock %}
+{% block below %}
+<p class="muted small" style="text-align:center;margin-top:16px">New here? <a href="/signup{{ '?invite=' ~ invite if invite else '' }}">Create an account</a></p>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends "app/_shell.html" %}
+{% block title %}Explorer · {{ tenant.name }}{% endblock %}
+{% block crumb %}Explorer{% endblock %}
+{% macro src(ref_source) -%}
+<span class="src-tag src-{{ ref_source }}"><span class="dot"></span>{{ ref_source }}</span>
+{%- endmacro %}
+{% macro conf(c) -%}
+<span class="row" style="gap:8px"><span class="meter"><span style="width:{{ (c * 100) | round | int }}%"></span></span><span class="mono small">{{ '%.2f' | format(c) }}</span></span>
+{%- endmacro %}
+{% block content %}
+<div class="stack">
+  <div class="page-head" style="margin:0">
+    <h1>Explorer</h1>
+    <p>Look up an entity by any identifying attribute. hubgentic queries every enabled source concurrently, resolves the records that describe the same real-world entity, and shows where each value came from.</p>
+  </div>
+
+  <form class="card query-bar stack" method="get" action="{{ base }}/explore" data-pending="Resolving across sources…">
+    {% if entity_types | length > 1 %}
+    <div class="field" style="max-width:260px">
+      <label for="entity">Entity type</label>
+      <select id="entity" name="entity">{% for e in entity_types %}<option {{ 'selected' if e == entity_type }}>{{ e }}</option>{% endfor %}</select>
+    </div>
+    {% else %}<input type="hidden" name="entity" value="{{ entity_type }}">{% endif %}
+    <div class="query-grid">
+      {% for a in query_attrs %}
+      <div>
+        <label for="q-{{ a }}">{{ {'lei': 'LEI', 'national_tax_code': 'Tax code'}.get(a, a | replace('_', ' ') | capitalize) }} <span class="faint mono small">{{ attrs[a].type.value if attrs[a].type.value is defined else attrs[a].type }}</span></label>
+        <input id="q-{{ a }}" type="text" name="{{ a }}" value="{{ criteria.get(a, '') }}" placeholder="{{ {'legal_name': 'e.g. Lucia Bianchi', 'national_tax_code': 'e.g. IT01234567890', 'lei': '20-char LEI', 'date_of_birth': 'YYYY-MM-DD', 'email': 'name@domain.com'}.get(a, '') }}">
+      </div>
+      {% endfor %}
+    </div>
+    <div class="spread">
+      <div class="chips">
+        <span class="faint small" style="align-self:center">Try:</span>
+        {% for ex in examples %}
+        <a class="chip" href="{{ base }}/explore?{% for k, v in ex.criteria.items() %}{{ k }}={{ v | urlencode }}{% endfor %}">{{ ex.label }} <span class="faint">· {{ ex.hint }}</span></a>
+        {% endfor %}
+      </div>
+      <div class="row">
+        {% if criteria %}<a class="btn btn-ghost" href="{{ base }}/explore">Clear</a>{% endif %}
+        <button class="btn btn-primary" type="submit">Resolve entity</button>
+      </div>
+    </div>
+  </form>
+
+  {% if error %}
+  <div class="alert alert-error" role="alert"><strong>No entity resolved.</strong> {{ error }} {% if tenant.role != 'member' %}Check that the relevant <a href="{{ base }}/sources">sources are enabled</a>.{% endif %}</div>
+  {% endif %}
+
+  {% if result %}
+  {% set res = result.resolution %}
+  {% set title = result.canonical.legal_name.value if result.canonical.legal_name is defined else result.entity_type %}
+  <div class="card">
+    <div class="entity-hero">
+      <div class="stack-sm">
+        <div class="row">
+          <span class="badge">{{ result.entity_type }}</span>
+          {% if result.canonical.party_type is defined %}<span class="badge badge-accent">{{ result.canonical.party_type.value | replace('_', ' ') }}</span>{% endif %}
+          {% if res.sources_denied %}<span class="badge badge-warn">{{ res.sources_denied | length }} source{{ 's' if res.sources_denied | length > 1 }} denied by policy</span>{% endif %}
+        </div>
+        <div class="entity-title">{{ title }}</div>
+        <div class="row small muted">
+          Correlated
+          {% for r in res.cluster_records %}<span class="src-tag src-{{ r.source }}"><span class="dot"></span>{{ r.source }}.{{ r.source_object }}[{{ r.source_key }}]</span>{% endfor %}
+        </div>
+      </div>
+      <dl class="kv">
+        <dt>Matched by</dt>
+        <dd>{% if res.supporting_matches %}{% for m in res.supporting_matches %}<code>{{ m.rule }}</code>{% if not loop.last %}, {% endif %}{% endfor %}{% else %}<span class="muted">single record</span>{% endif %}</dd>
+        <dt>Confidence</dt>
+        <dd>{% if res.supporting_matches %}{{ conf(res.supporting_matches | map(attribute='confidence') | min) }}{% else %}{{ conf(1.0) }}{% endif %}</dd>
+        <dt>Sources</dt>
+        <dd>{{ res.sources_consulted | join(', ') }}</dd>
+        <dt>Request</dt>
+        <dd class="row" style="gap:6px"><code id="req-id">{{ result.request_id }}</code><button class="btn btn-ghost btn-sm" type="button" data-copy="#req-id">Copy</button></dd>
+      </dl>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" aria-controls="tab-fields">Unified fields</button>
+      <button role="tab" aria-selected="false" aria-controls="tab-resolution">Resolution ({{ res.supporting_matches | length + res.other_candidates | length }})</button>
+      <button role="tab" aria-selected="false" aria-controls="tab-lineage">Lineage tree</button>
+      <button role="tab" aria-selected="false" aria-controls="tab-json">JSON</button>
+    </div>
+
+    <div id="tab-fields" role="tabpanel">
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th style="width:200px">Attribute</th><th>Values by source <span class="faint" style="text-transform:none;letter-spacing:0">· ★ canonical (first non-null in binding order)</span></th></tr></thead>
+        <tbody>
+        {% for attr, values in result.fields.items() %}
+        {% set distinct = values | map(attribute='value') | map('string') | unique | list %}
+        <tr>
+          <td>
+            <div>{{ attr }}</div>
+            {% if distinct | length > 1 %}<span class="conflict">● sources differ</span>{% elif values | length > 1 %}<span class="faint small">agree</span>{% else %}<span class="faint small">single source</span>{% endif %}
+          </td>
+          <td>
+            {% for pv in values %}
+            {% set p = pv.provenance %}
+            <div class="val {{ 'canon' if result.canonical[attr] == pv }}">
+              {{ src(p.source) }}
+              <span class="v">{{ pv.value }}</span>
+              <details class="prov">
+                <summary class="faint small">provenance</summary>
+                <div class="prov-body">
+                  <span>field</span><span>{{ p.source_object }}.{{ p.source_field }}</span>
+                  <span>record</span><span>{{ p.source_key }}</span>
+                  <span>fetched</span><span>{{ p.fetched_at.strftime('%Y-%m-%d %H:%M:%S') }} UTC</span>
+                  <span>rule</span><span>{{ p.resolution_rule }}</span>
+                  <span>confidence</span><span>{{ '%.2f' | format(p.resolution_confidence) }}</span>
+                </div>
+              </details>
+            </div>
+            {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+        {% for rel in result.relationships %}
+        <tr>
+          <td><div>{{ rel.relationship }}</div><span class="faint small">relationship · {{ rel.direction }}</span></td>
+          <td><div class="val">{{ src(rel.provenance.source) }}<span class="v">{% if rel.direction == 'inbound' %}{{ rel.other_display or rel.other.source_key }} → controls → this{% else %}this → {{ rel.relationship }} → {{ rel.other_display or rel.other.source_key }}{% endif %}</span><span class="faint mono small">{{ rel.provenance.source_object }}.{{ rel.provenance.source_field }}</span></div></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table></div>
+    </div>
+
+    <div id="tab-resolution" role="tabpanel" hidden>
+      {% for m in res.supporting_matches %}
+      {% include "app/_match.html" %}
+      {% endfor %}
+      {% if res.other_candidates %}
+      <div class="card-head" style="border-top:1px solid var(--border)"><h3>Considered and excluded</h3><p class="faint small">Below the auto-merge threshold or contradicted by a hard identifier.</p></div>
+      {% for m in res.other_candidates %}
+      {% include "app/_match.html" %}
+      {% endfor %}
+      {% endif %}
+      {% if not res.supporting_matches and not res.other_candidates %}<div class="empty">Only one record matched — nothing to correlate.</div>{% endif %}
+      <div class="card-body stack-sm" style="border-top:1px solid var(--border)">
+        {% for n in res.notes %}<p class="faint small">ⓘ {{ n }}</p>{% endfor %}
+        {% for d in res.sources_denied %}<p class="small" style="color:var(--warn)">⊘ {{ d }}</p>{% endfor %}
+      </div>
+    </div>
+
+    <div id="tab-lineage" role="tabpanel" hidden>
+      <div class="card-body"><pre><code>{{ lineage }}</code></pre></div>
+    </div>
+
+    <div id="tab-json" role="tabpanel" hidden>
+      <div class="card-body stack-sm">
+        <p class="faint small">Same payload your agent receives from <code>get_unified_entity</code> (MCP) or <code>POST /api/v1/unified</code>.</p>
+        <pre style="max-height:520px"><code>{{ result.model_dump_json(indent=2) }}</code></pre>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

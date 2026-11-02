@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Founder console · hubgentic{% endblock %}
+{% block feedback %}{% endblock %}
+{% block body %}
+<header class="mk-nav">
+  <a class="brand" href="/app"><span class="logo">{% include "_logo.svg" %}</span>hubgentic <span class="badge">founder console</span></a>
+  <a class="btn btn-sm" href="/app">Back to app</a>
+</header>
+<div class="content stack" style="margin:0 auto">
+  <div class="grid g3">
+    <div class="card stat"><div class="k">Sign-ups</div><div class="v">{{ signups | length }}</div></div>
+    <div class="card stat"><div class="k">Workspaces</div><div class="v">{{ usage | length }}</div></div>
+    <div class="card stat"><div class="k">Feedback notes</div><div class="v">{{ feedback | length }}</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>Feedback</h2></div>
+    {% if feedback %}
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>When</th><th>From</th><th>Workspace</th><th>Mood</th><th>Page</th><th>Message</th></tr></thead>
+      <tbody>{% for f in feedback %}
+      <tr>
+        <td class="faint nowrap">{{ f.created_at | ago }}</td>
+        <td>{{ f.email or 'anonymous' }}</td>
+        <td class="muted">{{ f.tenant_name or '—' }}</td>
+        <td>{{ {'love': '😍', 'meh': '🤔', 'blocked': '🚧'}.get(f.sentiment, '') }}</td>
+        <td class="mono small faint">{{ f.page }}</td>
+        <td style="white-space:pre-wrap;max-width:520px">{{ f.message }}</td>
+      </tr>{% endfor %}</tbody>
+    </table></div>
+    {% else %}<div class="empty">No feedback yet.</div>{% endif %}
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-head"><h2>Workspace usage</h2></div>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>Workspace</th><th>Queries</th><th>Last query</th></tr></thead>
+        <tbody>{% for u in usage %}<tr><td>{{ u.name }} <span class="faint small mono">{{ u.slug }}</span></td><td>{{ u.queries }}</td><td class="faint">{{ u.last | ago }}</td></tr>{% endfor %}</tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2>Sign-ups</h2></div>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>User</th><th>Workspaces</th><th>Joined</th></tr></thead>
+        <tbody>{% for s in signups %}<tr><td>{{ s.name }}<div class="faint small">{{ s.email }}</div></td><td>{{ s.workspaces }}</td><td class="faint">{{ s.created_at | ago }}</td></tr>{% endfor %}</tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

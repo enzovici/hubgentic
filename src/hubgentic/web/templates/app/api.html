@@ -1,0 +1,85 @@
+{% extends "app/_shell.html" %}
+{% block title %}API & MCP · {{ tenant.name }}{% endblock %}
+{% block crumb %}API &amp; MCP{% endblock %}
+{% block content %}
+<div class="stack">
+  <div class="page-head" style="margin:0">
+    <h1>API &amp; MCP</h1>
+    <p>Give your agents the same unified, provenance-annotated view you see in the Explorer. Keys belong to this workspace and inherit its source governance.</p>
+  </div>
+
+  {% if new_key %}
+  <div class="card card-pad stack-sm" style="border-color:var(--ok)">
+    <h3>Your new API key</h3>
+    <p class="muted small">Copy it now — for your security we only store a hash and can't show it again.</p>
+    <div class="copybox"><input id="new-key" type="text" readonly value="{{ new_key }}"><button class="btn btn-primary" type="button" data-copy="#new-key">Copy</button></div>
+  </div>
+  {% endif %}
+
+  <div class="card">
+    <div class="card-head spread">
+      <h2>API keys</h2>
+      {% if tenant.role != 'member' %}
+      <form method="post" action="{{ base }}/api" class="row" style="flex-wrap:nowrap;flex:1;max-width:380px;justify-content:flex-end">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <label class="sr-only" for="key-name">Key name</label>
+        <input id="key-name" type="text" name="name" placeholder="e.g. support-agent-prod" style="flex:1;min-width:0;height:32px">
+        <button class="btn btn-primary btn-sm" type="submit">Create key</button>
+      </form>
+      {% endif %}
+    </div>
+    {% if keys %}
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>Name</th><th>Key</th><th>Created</th><th>Last used</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+      {% for k in keys %}
+      <tr>
+        <td>{{ k.name }}<div class="faint small">by {{ k.creator }}</div></td>
+        <td class="mono small">{{ k.prefix }}…</td>
+        <td class="faint nowrap">{{ k.created_at | ago }}</td>
+        <td class="faint nowrap">{{ k.last_used_at | ago }}</td>
+        <td>{% if k.revoked_at %}<span class="badge badge-err">revoked</span>{% else %}<span class="badge badge-ok">active</span>{% endif %}</td>
+        <td style="text-align:right">
+          {% if not k.revoked_at and tenant.role != 'member' %}
+          <form method="post" action="{{ base }}/api/{{ k.id }}/revoke" class="inline-form" data-confirm="Revoke “{{ k.name }}”? Agents using it will stop working immediately.">
+            <input type="hidden" name="csrf" value="{{ csrf }}">
+            <button class="btn btn-ghost btn-sm btn-danger" type="submit">Revoke</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    <div class="empty">No keys yet.{% if tenant.role == 'member' %} Ask an admin to create one.{% endif %}</div>
+    {% endif %}
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-head"><h2>REST</h2></div>
+      <div class="card-body stack-sm">
+        <p class="muted small">Resolve an entity and get every field with its provenance.</p>
+<pre id="curl"><code>curl {{ base_url }}/api/v1/unified \
+  -H "Authorization: Bearer $HUBGENTIC_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"entity_type": "Counterparty",
+       "criteria": {"legal_name": "Lucia Bianchi"}}'</code></pre>
+        <div class="row"><button class="btn btn-sm" type="button" data-copy="#curl">Copy</button><a class="btn btn-ghost btn-sm" href="/api/docs" target="_blank" rel="noopener">OpenAPI docs ↗</a></div>
+        <p class="faint small">Also: <code>GET /api/v1/ontology</code>, <code>GET /api/v1/lineage/{request_id}</code></p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head spread"><h2>MCP</h2><span class="badge badge-accent">local · stdio</span></div>
+      <div class="card-body stack-sm">
+        <p class="muted small">Five tools — <code>list_ontology</code>, <code>describe_entity</code>, <code>resolve_entity</code>, <code>get_unified_entity</code>, <code>explain_lineage</code>. Add to Claude Code:</p>
+<pre id="mcp"><code>claude mcp add hubgentic -- \
+  uv --directory /path/to/hubgentic run hubgentic-server</code></pre>
+        <div class="row"><button class="btn btn-sm" type="button" data-copy="#mcp">Copy</button></div>
+        <p class="faint small">Hosted MCP (streamable HTTP, authenticated with these keys) is next on the roadmap.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

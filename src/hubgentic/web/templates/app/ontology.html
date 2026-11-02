@@ -1,0 +1,64 @@
+{% extends "app/_shell.html" %}
+{% block title %}Ontology · {{ tenant.name }}{% endblock %}
+{% block crumb %}Ontology{% endblock %}
+{% block content %}
+<div class="stack">
+  <div class="page-head" style="margin:0">
+    <h1>Ontology</h1>
+    <p>The vendor-neutral model your agents reason over, and how each attribute binds to native fields in every source. Binding order is the explicit canonical-merge policy — the only place source preference exists.</p>
+  </div>
+
+  {% for e in entities %}
+  <div class="card">
+    <div class="card-head spread">
+      <div class="row"><h2>{{ e.name }}</h2><span class="faint small">{{ e.attributes | length }} attributes · {{ e.relationships | length }} relationship{{ 's' if e.relationships | length != 1 }} · bound to {{ e.sources | length }} sources</span></div>
+    </div>
+    <div class="table-wrap"><table class="table mapping">
+      <thead>
+        <tr>
+          <th>Attribute</th><th>Type</th><th>Flags</th>
+          {% for s in e.sources %}<th><span class="src-tag src-{{ s }}"><span class="dot"></span>{{ s }}.{{ e.bindings[s].object }}</span>{% if loop.first %} <span class="faint" title="Preferred for canonical values">★</span>{% endif %}</th>{% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+      {% for a, d in e.attributes.items() %}
+      <tr>
+        <td>{{ a }}</td>
+        <td class="mono small muted">{{ d.type.value if d.type.value is defined else d.type }}{% if d.values %} <span class="faint">({{ d.values | join(' | ') }})</span>{% endif %}</td>
+        <td>
+          {% if d.required %}<span class="badge flag">required</span>{% endif %}
+          {% if d.identifying %}<span class="badge badge-accent flag">identifying</span>{% endif %}
+          {% if d.normalizer %}<span class="badge flag" title="Normalizer">≈ {{ d.normalizer }}</span>{% endif %}
+          {% if d.applies_to %}<span class="faint small">only {{ d.applies_to | join(', ') }}</span>{% endif %}
+        </td>
+        {% for s in e.sources %}
+        {% set fb = e.bindings[s].fields.get(a) %}
+        <td class="mono small">{% if fb %}{{ fb.source_field }}{% if fb.transform %} <span class="faint">· {{ fb.transform.value if fb.transform.value is defined else fb.transform }}</span>{% endif %}{% else %}<span class="faint">—</span>{% endif %}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+      {% for r, rd in e.relationships.items() %}
+      <tr>
+        <td>{{ r }}</td>
+        <td class="mono small muted">→ {{ rd.target }}</td>
+        <td><span class="badge flag">{{ rd.cardinality.value if rd.cardinality.value is defined else rd.cardinality }}</span></td>
+        {% for s in e.sources %}
+        {% set rb = e.bindings[s].relationships.get(r) %}
+        <td class="mono small">{% if rb %}{{ rb.source_field }}{% else %}<span class="faint">—</span>{% endif %}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </div>
+  {% endfor %}
+
+  <div class="card">
+    <details>
+      <summary class="card-head spread" style="cursor:pointer;border:0"><h2>Ontology definition (YAML)</h2><span class="faint small">read-only in the sandbox</span></summary>
+      <div class="card-body"><pre><code>{{ yaml_text }}</code></pre></div>
+    </details>
+  </div>
+  <p class="faint small">Want to model your own entities (Policy, Account, Ticket…)? <button class="btn btn-sm" type="button" data-open="feedback-dialog">Tell us what you'd model</button></p>
+</div>
+{% endblock %}

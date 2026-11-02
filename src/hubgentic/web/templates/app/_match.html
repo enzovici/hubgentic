@@ -1,0 +1,27 @@
+<div class="match">
+  <div><span class="src-tag src-{{ m.left.source }}"><span class="dot"></span>{{ m.left.source }}.{{ m.left.source_object }}[{{ m.left.source_key }}]</span></div>
+  <div class="arrow stack-sm">
+    <div>{% if m.decision == 'match' %}<span class="badge badge-ok">match</span>{% elif m.decision == 'possible_match' %}<span class="badge badge-warn">possible match</span>{% else %}<span class="badge badge-err">no match</span>{% endif %}</div>
+    <div><code>{{ m.rule }}</code></div>
+    <div class="row" style="justify-content:center;gap:8px"><span class="meter"><span style="width:{{ (m.confidence * 100) | round | int }}%"></span></span><span class="mono small">{{ '%.2f' | format(m.confidence) }}</span></div>
+  </div>
+  <div style="text-align:right"><span class="src-tag src-{{ m.right.source }}"><span class="dot"></span>{{ m.right.source }}.{{ m.right.source_object }}[{{ m.right.source_key }}]</span></div>
+</div>
+{% if m.evidence %}
+<div class="evidence">
+  <table class="table">
+    <tbody>
+    {% for e in m.evidence %}
+    <tr>
+      <td class="muted">{{ e.attribute }}</td>
+      <td class="mono">{{ e.left_value }}</td>
+      <td class="faint">vs</td>
+      <td class="mono">{{ e.right_value }}</td>
+      <td class="faint mono">{{ e.comparator }}</td>
+      <td class="mono">{{ '%.2f' | format(e.score) }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}

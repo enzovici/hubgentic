@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% macro icon(name) -%}
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+{%- if name == "overview" %}<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>
+{%- elif name == "explore" %}<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+{%- elif name == "ontology" %}<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M8 7.5 10.8 16M16 7.5 13.2 16M8.5 6h7"/>
+{%- elif name == "sources" %}<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>
+{%- elif name == "activity" %}<path d="M3 12h4l3-8 4 16 3-8h4"/>
+{%- elif name == "api" %}<path d="m8 8-5 4 5 4M16 8l5 4-5 4M14 4l-4 16"/>
+{%- elif name == "members" %}<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c2 .7 3.2 2.5 3.6 5.2"/>
+{%- elif name == "settings" %}<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>
+{%- endif %}
+</svg>
+{%- endmacro %}
+{% block body %}
+<div class="shell">
+  <aside class="sidebar" aria-label="Main navigation">
+    <a class="brand" href="{{ base }}"><span class="logo">{% include "_logo.svg" %}</span>hubgentic</a>
+
+    <div class="ws-switch">
+      <details data-menu>
+        <summary>
+          <span class="ws-avatar">{{ tenant.name[:1] | upper }}</span>
+          <span class="ws-name">{{ tenant.name }}</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg>
+        </summary>
+        <div class="menu" role="menu">
+          <div class="nav-label" style="padding-top:4px">Workspaces</div>
+          {% for t in tenants %}
+          <a href="/app/{{ t.slug }}" role="menuitem">
+            <span class="ws-avatar">{{ t.name[:1] | upper }}</span>
+            <span class="ws-name">{{ t.name }}</span>
+            {% if t.slug == tenant.slug %}<span class="faint">✓</span>{% endif %}
+          </a>
+          {% endfor %}
+          <hr>
+          <a href="/app/new" role="menuitem">＋ New workspace</a>
+        </div>
+      </details>
+    </div>
+
+    <nav class="nav">
+      <a href="{{ base }}" class="{{ 'active' if nav == 'overview' }}">{{ icon('overview') }}Overview</a>
+      <a href="{{ base }}/explore" class="{{ 'active' if nav == 'explore' }}">{{ icon('explore') }}Explorer</a>
+      <a href="{{ base }}/ontology" class="{{ 'active' if nav == 'ontology' }}">{{ icon('ontology') }}Ontology</a>
+      <a href="{{ base }}/sources" class="{{ 'active' if nav == 'sources' }}">{{ icon('sources') }}Sources</a>
+      <a href="{{ base }}/activity" class="{{ 'active' if nav == 'activity' }}">{{ icon('activity') }}Audit log</a>
+      <div class="nav-label">Developers</div>
+      <a href="{{ base }}/api" class="{{ 'active' if nav == 'api' }}">{{ icon('api') }}API &amp; MCP</a>
+      <div class="nav-label">Workspace</div>
+      <a href="{{ base }}/members" class="{{ 'active' if nav == 'members' }}">{{ icon('members') }}Members</a>
+      <a href="{{ base }}/settings" class="{{ 'active' if nav == 'settings' }}">{{ icon('settings') }}Settings</a>
+    </nav>
+
+    <div class="sidebar-foot">
+      {% if is_staff %}<a class="btn btn-ghost btn-sm" href="/admin" style="justify-content:flex-start">Founder console</a>{% endif %}
+      <div class="user-chip">
+        <span class="ws-avatar">{{ user.name[:1] | upper }}</span>
+        <div style="min-width:0;flex:1">
+          <div class="ws-name">{{ user.name }}</div>
+          <div class="faint small" style="overflow:hidden;text-overflow:ellipsis">{{ user.email }}</div>
+        </div>
+        <form method="post" action="/logout" class="inline-form">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <button class="btn btn-ghost btn-sm" type="submit" title="Log out" aria-label="Log out">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="crumbs">
+        <button class="btn btn-ghost btn-sm mobile-nav-toggle" type="button" data-nav-toggle aria-label="Toggle navigation">☰</button>
+        <span>{{ tenant.name }}</span><span>/</span><strong>{% block crumb %}{% endblock %}</strong>
+      </div>
+      <div class="row">
+        <span class="badge" title="Your role in this workspace">{{ tenant.role }}</span>
+        <span class="badge badge-accent">{{ tenant.plan }}</span>
+      </div>
+    </header>
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+{% endblock %}

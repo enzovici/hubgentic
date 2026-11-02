@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "hubgentic-web",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": ["run", "hubgentic-web"],
+      "port": 8000,
+      "env": { "HUBGENTIC_ADMIN_EMAILS": "vincenzo.vicidomini@gmail.com" }
+    }
+  ]
+}

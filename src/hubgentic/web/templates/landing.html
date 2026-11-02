@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}hubgentic — the entity layer for enterprise AI agents{% endblock %}
+{% block body %}
+<header class="mk-nav">
+  <a class="brand" href="/"><span class="logo">{% include "_logo.svg" %}</span>hubgentic</a>
+  <nav class="links">
+    <a class="hide-sm" href="#how">How it works</a>
+    <a class="hide-sm" href="#features">Features</a>
+    {% if user %}
+      <a class="btn btn-primary" href="/app">Open app →</a>
+    {% else %}
+      <a href="/login">Log in</a>
+      <a class="btn btn-primary" href="/signup">{{ 'Try the sandbox' if signup_open else 'Request access' }}</a>
+    {% endif %}
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <span class="eyebrow"><span class="badge badge-accent">Early access</span> Built for regulated industries</span>
+    <h1>Your AI agents don't know <span class="grad">who the customer is.</span></h1>
+    <p class="lede">
+      hubgentic is the entity layer for enterprise agents. It resolves the same customer across core banking,
+      CRM, KYC and support systems at query time — and tells your agent exactly where every field came from.
+      No data lake. No copies at rest.
+    </p>
+    <div class="cta">
+      <a class="btn btn-primary btn-lg" href="{{ '/app' if user else '/signup' }}">Explore the live sandbox</a>
+      <a class="btn btn-lg" href="#how">See how it works</a>
+    </div>
+    <p class="faint small" style="margin-top:14px">Free sandbox with realistic mock systems · No credit card · MCP + REST</p>
+
+    <div class="card demo-shot">
+      <div class="bar"><i></i><i></i><i></i><span class="faint small mono" style="margin-left:10px">get_unified_entity · {"legal_name": "Lucia Bianchi"}</span></div>
+<pre><code>UnifiedEntity Counterparty
+├─ legal_name
+│  ├─ ★ 'BIANCHI LUCIA'    ← core_banking.CIF[CIF-1003].NAME_TXT   rule=fuzzy.name_dob_email conf=1.00
+│  └─   'Lucia Bianchi'    ← crm.Account[001A000003].Name          rule=fuzzy.name_dob_email conf=1.00
+├─ national_tax_code
+│  └─ ★ 'BNCLCU85M41F205X' ← core_banking.CIF[CIF-1003].TAX_CODE   <span class="faint"># CRM never had it</span>
+├─ date_of_birth
+│  ├─ ★ '1985-08-01'       ← core_banking.CIF[CIF-1003].BIRTH_DT
+│  └─   '1985-08-01'       ← crm.Account[001A000003].Birth_Date__c
+└─ email
+   ├─ ★ 'lucia.bianchi@gmail.com'  ← core_banking.CIF[CIF-1003].EMAIL_ADDR
+   └─   'Lucia.Bianchi@GMAIL.com'  ← crm.Account[001A000003].Email__c</code></pre>
+    </div>
+  </section>
+
+  <section class="section" id="problem">
+    <div class="section-head">
+      <h2>Agents are only as good as the context you can prove.</h2>
+      <p>Customer-facing agents answer from whichever system they were wired to. In a bank, an insurer or a telco, the truth is split across a dozen systems that disagree — and you can't just copy it all into one place.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card feature"><div class="ico">⚠︎</div><h3>Same customer, five records</h3><p>"ROSSI MARIO" in core banking, "Mario Rossi" in the CRM, a typo in the ticketing tool. Your agent sees three strangers.</p></div>
+      <div class="card feature"><div class="ico">⛓︎</div><h3>No lineage, no trust</h3><p>When an agent states a customer's tax status, compliance asks: which system, which field, fetched when? Today nobody can answer.</p></div>
+      <div class="card feature"><div class="ico">🔒</div><h3>Data can't move</h3><p>Banking secrecy, residency and supervisory rules make "just centralise it" a two-year program. Agents need answers now.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="section-head">
+      <h2>How it works</h2>
+      <p>Define the business entities once. hubgentic binds them to your systems of record and does the hard part on every request.</p>
+    </div>
+    <div class="grid g4 steps">
+      <div class="card step"><h3>Model</h3><p>Describe entities like <code>Counterparty</code> in a vendor-neutral ontology — attributes, identifiers, relationships.</p></div>
+      <div class="card step"><h3>Bind</h3><p>Map each attribute to native fields in every source: <code>CIF.NAME_TXT</code>, <code>Account.Name</code>. No source is privileged.</p></div>
+      <div class="card step"><h3>Resolve</h3><p>At query time, fetch from all sources concurrently and correlate records with deterministic, normalized and fuzzy rules.</p></div>
+      <div class="card step"><h3>Explain</h3><p>Return one unified entity where every value carries its source, field, timestamp, matching rule and confidence.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <div class="section-head">
+      <h2>Built for agents. Built for auditors.</h2>
+    </div>
+    <div class="grid g3">
+      <div class="card feature"><div class="ico">◎</div><h3>Federated entity resolution</h3><p>Clean shared keys, dirty identifiers, no shared key at all — each match states the exact rule that fired and why.</p></div>
+      <div class="card feature"><div class="ico">⌁</div><h3>Field-level lineage</h3><p>Provenance is part of the data contract. It is impossible to emit an unattributed value.</p></div>
+      <div class="card feature"><div class="ico">⇄</div><h3>MCP-native</h3><p>Plug into Claude, your own agent framework, or any MCP client. REST API with workspace-scoped keys too.</p></div>
+      <div class="card feature"><div class="ico">⚖︎</div><h3>Governance per workspace</h3><p>Every source fetch passes through a policy check. Switch systems off per workspace; denials are explained in the response.</p></div>
+      <div class="card feature"><div class="ico">◇</div><h3>Nothing at rest</h3><p>Correlation is request-scoped. Explanations live in a short-lived cache, then disappear.</p></div>
+      <div class="card feature"><div class="ico">✦</div><h3>Entity-anchored memory <span class="badge badge-accent">Exploring</span></h3><p>Agent memory keyed to the resolved customer, not the chat session — so every agent remembers the same person. Tell us if you need this.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card cta-band welcome">
+      <h2 style="font-size:28px;letter-spacing:-0.03em">Help us build the layer your agents are missing.</h2>
+      <p class="muted" style="margin:10px auto 22px;max-width:560px">We're looking for a handful of teams running agents against messy systems of record. Try the sandbox, then tell us what breaks.</p>
+      <div class="row" style="justify-content:center">
+        <a class="btn btn-primary btn-lg" href="{{ '/app' if user else '/signup' }}">Start in the sandbox</a>
+        <button class="btn btn-lg" type="button" data-open="feedback-dialog">Talk to the founder</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">© hubgentic · Early access · Sandbox data is synthetic</footer>
+{% endblock %}

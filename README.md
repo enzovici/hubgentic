@@ -64,6 +64,40 @@ Example call: `get_unified_entity` with
 the CRM record has no tax code, so correlation happens probabilistically
 (`fuzzy.name_dob_email`) and the output says exactly that, per field.
 
+## Web app (multi-tenant early-access UI)
+
+```sh
+HUBGENTIC_ADMIN_EMAILS=you@example.com uv run hubgentic-web   # http://127.0.0.1:8000
+```
+
+Marketing page, sign-up/login, and per-workspace app: Explorer (unified entity
++ provenance + resolution evidence), Ontology mapping matrix, per-workspace
+source governance, audit log, API keys, members/invites with roles
+(owner/admin/member), and a feedback widget whose notes land in the founder
+console at `/admin` (visible to `HUBGENTIC_ADMIN_EMAILS`).
+
+Tenancy: workspace URLs carry the slug (`/app/<slug>/…`) and membership is
+re-checked on every request; each workspace gets its own orchestrator (so the
+lineage cache is never shared) and its own governance policy. Auth is stdlib
+only: scrypt password hashes, server-side sessions (SHA-256 of the token
+stored), per-session CSRF tokens, cross-origin POST rejection, login
+throttling. API keys are workspace-scoped and hashed at rest.
+
+REST: `POST /api/v1/unified`, `GET /api/v1/ontology`,
+`GET /api/v1/lineage/{request_id}` with `Authorization: Bearer hg_live_…`.
+
+| Env var | Default | |
+|---|---|---|
+| `HUBGENTIC_DB` | `./var/hubgentic.db` | SQLite file (accounts only; catalog data never stored) |
+| `HUBGENTIC_ADMIN_EMAILS` | — | comma-separated founder-console access |
+| `HUBGENTIC_SIGNUP` | `open` | set `invite` to require an invite link |
+| `HUBGENTIC_SECURE_COOKIES` | `0` | set `1` behind HTTPS (the Dockerfile does) |
+
+Deploy anywhere that runs a container with a persistent volume at `/data`
+(Fly.io, Railway, Render): `docker build -t hubgentic . && docker run -p 8000:8000 -v hg:/data hubgentic`.
+Single-process SQLite is fine for early access; move to Postgres before
+running more than one instance.
+
 ## Architecture
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the component map, request
@@ -73,5 +107,5 @@ scope, the seed-data overlap matrix, and accepted risks.
 
 ## v0 non-goals
 
-No real source credentials, no write-back, no aggregation, no UI, no auth
-server, no performance work. Read-only correlation; nothing persisted.
+No real source credentials, no write-back, no aggregation, no SSO/email
+verification, no performance work. Read-only correlation; nothing persisted.

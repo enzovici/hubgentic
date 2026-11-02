@@ -1,0 +1,78 @@
+{% extends "app/_shell.html" %}
+{% block title %}Overview · {{ tenant.name }}{% endblock %}
+{% block crumb %}Overview{% endblock %}
+{% block content %}
+<div class="stack">
+  {% if welcome %}
+  <div class="card welcome">
+    <span class="badge badge-accent">Sandbox ready</span>
+    <h1 style="margin-top:10px">Welcome to {{ tenant.name }}, {{ user.name.split(' ')[0] }} 👋</h1>
+    <p class="muted" style="margin-top:6px;max-width:640px">Your workspace is connected to two synthetic systems of record — a core-banking CIF master and a Salesforce-style CRM — that disagree in all the realistic ways. Try resolving a customer across them.</p>
+    <div class="row" style="margin-top:16px">
+      <a class="btn btn-primary" href="{{ base }}/explore?legal_name=Lucia+Bianchi">Resolve “Lucia Bianchi” →</a>
+      <a class="btn" href="{{ base }}/ontology">See the ontology</a>
+    </div>
+  </div>
+  {% else %}
+  <div class="page-head spread" style="margin:0">
+    <div><h1>Overview</h1><p>Your entity layer at a glance.</p></div>
+    <a class="btn btn-primary" href="{{ base }}/explore">New query</a>
+  </div>
+  {% endif %}
+
+  <div class="grid g4">
+    <div class="card stat"><div class="k">Queries · 7 days</div><div class="v">{{ stats.queries_7d }}</div><div class="s">web + API</div></div>
+    <div class="card stat"><div class="k">Entities resolved</div><div class="v">{{ stats.resolved }}</div><div class="s">{% if stats.avg_ms %}avg {{ stats.avg_ms }} ms{% else %}all time{% endif %}</div></div>
+    <div class="card stat"><div class="k">Sources live</div><div class="v">{{ stats.sources }}<span class="faint" style="font-size:16px"> / {{ stats.sources_total }}</span></div><div class="s">federated, nothing copied</div></div>
+    <div class="card stat"><div class="k">Members</div><div class="v">{{ stats.members }}</div><div class="s">{{ stats.entity_types }} entity type{{ 's' if stats.entity_types != 1 }}</div></div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-head spread"><h2>Get started</h2><span class="faint small">{{ checklist | selectattr(1) | list | length }} / {{ checklist | length }}</span></div>
+      {% for label, done, href in checklist %}
+      <a class="check {{ 'done' if done }}" href="{{ href }}">
+        <span class="tick">{% if done %}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="m5 12 5 5L20 7"/></svg>{% endif %}</span>
+        <span class="label">{{ label }}</span>
+        <span class="faint" style="margin-left:auto">→</span>
+      </a>
+      {% endfor %}
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Try a scenario</h2></div>
+      <div class="card-body stack-sm">
+        {% for ex in examples %}
+        <a class="check" style="padding:9px 0;border:0" href="{{ base }}/explore?{% for k, v in ex.criteria.items() %}{{ k }}={{ v | urlencode }}{% endfor %}">
+          <span class="ws-avatar">{{ loop.index }}</span>
+          <span><strong>{{ ex.label }}</strong> <span class="faint small">· {{ ex.hint }}</span></span>
+          <span class="faint" style="margin-left:auto">→</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head spread"><h2>Recent activity</h2><a class="small" href="{{ base }}/activity">View audit log →</a></div>
+    {% if recent %}
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>Query</th><th>Status</th><th>Records</th><th>By</th><th>When</th></tr></thead>
+      <tbody>
+      {% for q in recent %}
+      <tr>
+        <td><span class="mono small">{{ q.entity_type }} {{ q.criteria }}</span></td>
+        <td>{% include "app/_status.html" %}</td>
+        <td>{{ q.records }}</td>
+        <td class="muted">{{ q.actor }}</td>
+        <td class="faint nowrap">{{ q.created_at | ago }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    <div class="empty">No queries yet. <a href="{{ base }}/explore">Run your first one →</a></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

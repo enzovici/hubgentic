@@ -1,0 +1,35 @@
+<button class="btn fab" type="button" data-open="feedback-dialog">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  Feedback
+</button>
+<dialog id="feedback-dialog" aria-labelledby="fb-title">
+  <form method="post" action="/feedback" class="card-pad stack">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="hidden" name="back" value="{{ path }}">
+    {% if tenant %}<input type="hidden" name="tenant" value="{{ tenant.slug }}">{% endif %}
+    <div class="spread">
+      <h2 id="fb-title">Help shape hubgentic</h2>
+      <button class="btn btn-ghost btn-sm" type="button" data-close aria-label="Close">✕</button>
+    </div>
+    <p class="muted">We're early. What's missing, confusing, or exactly what you needed? Every note is read by a human.</p>
+    <div class="sentiments" role="radiogroup" aria-label="How's it going?">
+      <label><input type="radio" name="sentiment" value="love"><span>😍 Love it</span></label>
+      <label><input type="radio" name="sentiment" value="meh"><span>🤔 Unsure</span></label>
+      <label><input type="radio" name="sentiment" value="blocked"><span>🚧 Blocked</span></label>
+    </div>
+    {% if not user %}
+    <div class="field">
+      <label for="fb-email">Email <span class="faint">(optional, so we can reply)</span></label>
+      <input id="fb-email" type="email" name="email" autocomplete="email">
+    </div>
+    {% endif %}
+    <div class="field">
+      <label for="fb-msg">Your feedback</label>
+      <textarea id="fb-msg" name="message" required placeholder="e.g. I'd use this if it connected to Snowflake and our ticketing system…"></textarea>
+    </div>
+    <div class="row" style="justify-content:flex-end">
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn btn-primary" type="submit">Send feedback</button>
+    </div>
+  </form>
+</dialog>

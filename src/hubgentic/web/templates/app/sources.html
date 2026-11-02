@@ -1,0 +1,42 @@
+{% extends "app/_shell.html" %}
+{% block title %}Sources · {{ tenant.name }}{% endblock %}
+{% block crumb %}Sources{% endblock %}
+{% block content %}
+<div class="stack">
+  <div class="page-head" style="margin:0">
+    <h1>Sources</h1>
+    <p>Systems of record federated into this workspace. Data is fetched at query time and never copied. Every fetch passes a governance check — switch a source off and agents in this workspace stop seeing it immediately, with the denial explained in each response.</p>
+  </div>
+  <div class="card">
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>Source</th><th>Kind</th><th>Entities</th><th>Status</th><th style="text-align:right">Enabled</th></tr></thead>
+      <tbody>
+      {% for s in sources %}
+      <tr>
+        <td><span class="src-tag src-{{ s.id }}"><span class="dot"></span>{{ s.id }}</span><div class="muted small" style="margin-top:4px">{{ s.description }}</div></td>
+        <td><span class="badge">{{ s.kind }}</span></td>
+        <td class="muted">{{ s.entities | join(', ') }}</td>
+        <td>{% if s.enabled %}<span class="badge badge-ok"><span class="dot"></span>live</span>{% else %}<span class="badge badge-warn"><span class="dot"></span>denied by policy</span>{% endif %}</td>
+        <td style="text-align:right">
+          <form method="post" action="{{ base }}/sources/{{ s.id }}" class="inline-form">
+            <input type="hidden" name="csrf" value="{{ csrf }}">
+            <input type="hidden" name="enabled" value="{{ '0' if s.enabled else '1' }}">
+            <button class="switch {{ 'on' if s.enabled }}" type="submit" role="switch" aria-checked="{{ 'true' if s.enabled else 'false' }}" aria-label="Toggle {{ s.id }}" {{ 'disabled' if tenant.role == 'member' }}></button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </div>
+  {% if tenant.role == 'member' %}<p class="faint small">Only workspace owners and admins can change source governance.</p>{% endif %}
+
+  <div class="card card-pad spread">
+    <div>
+      <h3>Connect a real system</h3>
+      <p class="muted small" style="margin-top:4px">Adapters for Salesforce, Snowflake, Postgres, SAP and REST/MCP sources are on the roadmap. Which one would unblock you?</p>
+    </div>
+    <button class="btn" type="button" data-open="feedback-dialog">Request a connector</button>
+  </div>
+</div>
+{% endblock %}

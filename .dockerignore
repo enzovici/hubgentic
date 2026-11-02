@@ -1,0 +1,5 @@
+.venv
+.venv.nosync
+var
+.git
+__pycache__
