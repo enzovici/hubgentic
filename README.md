@@ -93,7 +93,19 @@ REST: `POST /api/v1/unified`, `GET /api/v1/ontology`,
 | `HUBGENTIC_SIGNUP` | `open` | set `invite` to require an invite link |
 | `HUBGENTIC_SECURE_COOKIES` | `0` | set `1` behind HTTPS (the Dockerfile does) |
 
-Deploy anywhere that runs a container with a persistent volume at `/data`
+**Production (app.hubgentic.ai)** runs on a VPS: systemd unit `hubgentic`
+on `127.0.0.1:8010` behind Caddy (automatic HTTPS), SQLite in
+`/var/lib/hubgentic`. Ship the committed HEAD with:
+
+```bash
+make deploy   # tests → upload HEAD → uv sync → restart → health check
+make status   # deployed revision vs local HEAD
+make logs     # last 100 service log lines
+```
+
+`DEPLOY_HOST` (default `cerebrus`, an SSH alias) and `APP_URL` can be overridden.
+
+Alternatively, deploy anywhere that runs a container with a persistent volume at `/data`
 (Fly.io, Railway, Render): `docker build -t hubgentic . && docker run -p 8000:8000 -v hg:/data hubgentic`.
 Single-process SQLite is fine for early access; move to Postgres before
 running more than one instance.
