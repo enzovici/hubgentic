@@ -3,7 +3,7 @@
 {% block feedback %}{% endblock %}
 {% block body %}
 <header class="mk-nav">
-  <a class="brand" href="/app"><span class="logo">{% include "_logo.svg" %}</span>hubgentic <span class="badge">founder console</span></a>
+  <a class="brand" href="/app"><img class="logo" src="/static/mark.svg" alt="" width="26" height="26">hubgentic <span class="badge">founder console</span></a>
   <a class="btn btn-sm" href="/app">Back to app</a>
 </header>
 <div class="content stack" style="margin:0 auto">
@@ -15,7 +15,8 @@
   </div>
 
   <div class="card">
-    <div class="card-head"><h2>Leads</h2><p class="faint small">Contact form on www.hubgentic.ai</p></div>
+    <div class="card-head spread"><div><h2>Leads</h2><p class="faint small">Contact form on www.hubgentic.ai</p></div>
+      {% if lead_alerts %}<span class="badge badge-ok">email alerts → {{ lead_alerts }}</span>{% else %}<span class="badge">email alerts off</span>{% endif %}</div>
     {% if leads %}
     <div class="table-wrap"><table class="table">
       <thead><tr><th>When</th><th>Who</th><th>Company</th><th>Segment</th><th>Interests</th><th>Message</th></tr></thead>

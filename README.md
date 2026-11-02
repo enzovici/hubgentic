@@ -122,7 +122,8 @@ make deploy-site  # build → upload to the VPS (/var/www/hubgentic-site)
 ```
 
 The contact form posts to `/lead`, which Caddy forwards to the web app; requests
-show up under **Leads** in `/admin`. Run `uv run python site/make_images.py`
+show up under **Leads** in `/admin`, and are emailed to you once SMTP is set in
+`/etc/hubgentic/hubgentic.env` on the VPS (see `deploy/hubgentic.env.example`). Run `uv run python site/make_images.py`
 (needs Google Chrome) after changing the hero copy to refresh the social-share
 images. Caddy config for both hosts: `deploy/Caddyfile.hubgentic`.
 

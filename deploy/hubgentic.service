@@ -1,0 +1,27 @@
+# /etc/systemd/system/hubgentic.service on the VPS.
+[Unit]
+Description=hubgentic web app (app.hubgentic.ai)
+After=network.target
+
+[Service]
+User=hubgentic
+Group=hubgentic
+WorkingDirectory=/opt/hubgentic/app
+Environment=HOST=127.0.0.1
+Environment=PORT=8010
+Environment=HUBGENTIC_DB=/var/lib/hubgentic/hubgentic.db
+Environment=HUBGENTIC_SECURE_COOKIES=1
+Environment=HUBGENTIC_ADMIN_EMAILS=vincenzo.vicidomini@gmail.com
+Environment=HUBGENTIC_SIGNUP=open
+# Secrets (SMTP for lead alerts); optional, root-only. See deploy/hubgentic.env.example.
+EnvironmentFile=-/etc/hubgentic/hubgentic.env
+ExecStart=/opt/hubgentic/app/.venv/bin/hubgentic-web
+Restart=on-failure
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/hubgentic
+
+[Install]
+WantedBy=multi-user.target

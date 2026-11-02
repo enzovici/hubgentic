@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import quote, unquote, urlparse
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.exception_handlers import http_exception_handler
@@ -29,6 +29,7 @@ from hubgentic.federation.orchestrator import EntityNotFoundError
 from hubgentic.lineage.render import render_lineage_tree
 from hubgentic.web import security as sec
 from hubgentic.web.graphs import entity_graph, ontology_graph
+from hubgentic.web.notify import Mailer
 from hubgentic.web.db import Database, default_db_path, now
 from hubgentic.web.tenancy import TenantRuntimes
 
@@ -77,6 +78,7 @@ def create_app(
     secure_cookies: bool | None = None,
     admin_emails: set[str] | None = None,
     signup_open: bool | None = None,
+    mailer: Mailer | None = None,
     **adapter_kwargs: Any,
 ) -> FastAPI:
     db = Database(db_path or default_db_path())
@@ -91,6 +93,9 @@ def create_app(
         }
     if signup_open is None:
         signup_open = os.environ.get("HUBGENTIC_SIGNUP", "open") == "open"
+    if mailer is None:
+        mailer = Mailer.from_env(admin_emails)
+    app_url = os.environ.get("HUBGENTIC_APP_URL", "https://app.hubgentic.ai").rstrip("/")
     login_throttle = sec.Throttle(limit=8, window=300)
     feedback_throttle = sec.Throttle(limit=10, window=3600)
     lead_throttle = sec.Throttle(limit=5, window=3600)
@@ -432,7 +437,7 @@ def create_app(
         return redirect(back, "Thank you — this goes straight to the founder.")
 
     @app.post("/lead")
-    async def lead(request: Request):
+    async def lead(request: Request, background: BackgroundTasks):
         """Contact form on the marketing site; Caddy proxies www.hubgentic.ai/lead here."""
         form = await request.form()
         en = form.get("lang") == "en"
@@ -449,13 +454,16 @@ def create_app(
             return RedirectResponse(retry, status_code=303)
         segment = str(form.get("segment", ""))
         interests = [str(i) for i in form.getlist("interests") if i in LEAD_INTERESTS]
-        db.run(
+        lead_id = db.run(
             "INSERT INTO leads (name, email, company, segment, interests, message, lang, created_at) "
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             name, email, str(form.get("company", "")).strip()[:160] or None,
             segment if segment in LEAD_SEGMENTS else None, ",".join(interests) or None,
             str(form.get("message", "")).strip()[:4000] or None, "en" if en else "it", now(),
         )
+        if mailer:
+            row = db.one("SELECT * FROM leads WHERE id = ?", lead_id)
+            background.add_task(mailer.send_lead, dict(row), f"{app_url}/admin")
         return RedirectResponse(thanks, status_code=303)
 
     # ── workspace entry points ──────────────────────────────────────────
@@ -846,6 +854,7 @@ def create_app(
         return render(
             request, "admin.html", user=user,
             leads=db.all("SELECT * FROM leads ORDER BY id DESC LIMIT 300"),
+            lead_alerts=", ".join(mailer.recipients) if mailer else None,
             feedback=db.all(
                 "SELECT f.*, u.email, t.name AS tenant_name FROM feedback f "
                 "LEFT JOIN users u ON u.id = f.user_id LEFT JOIN tenants t ON t.id = f.tenant_id "

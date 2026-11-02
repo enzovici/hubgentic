@@ -6,6 +6,8 @@ DEPLOY_HOST ?= cerebrus
 APP_URL     ?= https://app.hubgentic.ai
 APP_DIR     := /opt/hubgentic/app
 UV_ENV      := UV_PYTHON_INSTALL_DIR=/opt/hubgentic/python UV_CACHE_DIR=/opt/hubgentic/.uvcache
+# Reuse one SSH connection (kept open 10 minutes): the VPS firewall rate-limits new ones.
+SSH         := ssh -o ControlMaster=auto -o ControlPath=$(HOME)/.ssh/cm-%C -o ControlPersist=10m
 
 .PHONY: test deploy status logs
 
@@ -17,7 +19,7 @@ test:
 deploy: test
 	@git diff --quiet HEAD -- || { echo "Uncommitted changes — commit or stash before deploying."; exit 1; }
 	@rev=$$(git rev-parse --short HEAD); echo "→ deploying $$rev to $(DEPLOY_HOST)"; \
-	git archive --format=tar HEAD | ssh $(DEPLOY_HOST) "set -e; \
+	git archive --format=tar HEAD | $(SSH) $(DEPLOY_HOST) "set -e; \
 		stage=\$$(mktemp -d); trap 'rm -rf \$$stage' EXIT; \
 		tar -x -C \$$stage; echo $$rev > \$$stage/REVISION; \
 		chmod 755 \$$stage; \
@@ -30,11 +32,11 @@ deploy: test
 		|| { echo "✗ $(APP_URL)/healthz failed"; exit 1; }
 
 status:
-	@ssh $(DEPLOY_HOST) "echo deployed: \$$(cat $(APP_DIR)/REVISION 2>/dev/null || echo unknown); systemctl is-active hubgentic"
+	@$(SSH) $(DEPLOY_HOST) "echo deployed: \$$(cat $(APP_DIR)/REVISION 2>/dev/null || echo unknown); systemctl is-active hubgentic"
 	@echo "local HEAD: $$(git rev-parse --short HEAD)"
 
 logs:
-	ssh $(DEPLOY_HOST) "sudo journalctl -u hubgentic -n 100 --no-pager"
+	$(SSH) $(DEPLOY_HOST) "sudo journalctl -u hubgentic -n 100 --no-pager"
 
 # ── marketing site (www.hubgentic.ai) ──────────────────────────────────
 SITE_DIR := /var/www/hubgentic-site
@@ -50,7 +52,7 @@ site-dev:
 # Like `deploy`, only ships committed copy so the live site matches a revision.
 deploy-site: site
 	@git diff --quiet HEAD -- site || { echo "Uncommitted changes in site/ — commit before deploying."; exit 1; }
-	rsync -rlz --delete site/dist/ $(DEPLOY_HOST):$(SITE_DIR)/
+	rsync -rlz --delete -e "$(SSH)" site/dist/ $(DEPLOY_HOST):$(SITE_DIR)/
 	@curl -sf https://www.hubgentic.ai/ | grep -q "/assets/site.css?v=" \
 		&& echo "✓ https://www.hubgentic.ai is serving this build ($$(git rev-parse --short HEAD))" \
 		|| echo "Uploaded to $(DEPLOY_HOST):$(SITE_DIR); www.hubgentic.ai is not serving it yet (DNS or Caddy)."

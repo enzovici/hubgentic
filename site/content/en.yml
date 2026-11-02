@@ -282,6 +282,7 @@ privacy:
     - title: "Where and for how long"
       body:
         - "The site and form data are hosted on servers in Switzerland, a country recognised by the European Commission as providing adequate data protection."
+        - "So we can reply quickly, each request is also sent to us by email; in that step your data is processed by our email provider on our behalf."
         - "We keep contact requests for as long as needed to handle them and no longer than 24 months after our last contact, unless the law requires otherwise. Technical logs are kept for a limited period, for security purposes only."
     - title: "Your rights"
       body:

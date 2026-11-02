@@ -254,3 +254,57 @@ def test_lead_form(app):
     html = founder.get("/admin").text
     assert html.count("Giulia Verdi") == 1
     assert "giulia@example.com" in html and "platform" in html and "bogus" not in html
+
+
+class FakeSMTP:
+    sent: list = []
+    fail = False
+
+    def __init__(self, host, port, timeout=None, context=None):
+        self.host, self.port = host, port
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def starttls(self, context=None):
+        pass
+
+    def login(self, user, password):
+        pass
+
+    def send_message(self, msg):
+        if FakeSMTP.fail:
+            raise OSError("smtp down")
+        FakeSMTP.sent.append(msg)
+
+
+def test_lead_email_alert(tmp_path, monkeypatch):
+    from hubgentic.web import notify
+
+    monkeypatch.setattr(notify.smtplib, "SMTP", FakeSMTP)
+    monkeypatch.setenv("HUBGENTIC_SMTP_HOST", "smtp.example.com")
+    monkeypatch.setenv("HUBGENTIC_SMTP_USER", "alerts@example.com")
+    monkeypatch.delenv("HUBGENTIC_LEAD_NOTIFY", raising=False)
+    FakeSMTP.sent, FakeSMTP.fail = [], False
+    app = create_app(tmp_path / "m.db", secure_cookies=False, admin_emails={"founder@example.com"},
+                     simulated_latency_s=0.0)
+    form = {"name": "Giulia Verdi", "email": "giulia@example.com", "company": "Verdi SpA",
+            "interests": ["platform"], "message": "Ciao", "consent": "1", "lang": "it"}
+    r = client(app).post("/lead", data=form, follow_redirects=False)
+    assert r.headers["location"] == "/grazie/"
+    [msg] = FakeSMTP.sent
+    assert msg["To"] == "founder@example.com" and msg["Reply-To"] == "giulia@example.com"
+    assert msg["Subject"] == "New lead: Giulia Verdi (Verdi SpA)"
+    assert "platform" in msg.get_content() and "https://app.hubgentic.ai/admin" in msg.get_content()
+
+    # A mail outage never costs the lead: it's stored and the visitor still sees the thank-you page.
+    FakeSMTP.fail = True
+    r = client(app).post("/lead", data={**form, "name": "Second"}, follow_redirects=False)
+    assert r.headers["location"] == "/grazie/"
+    founder = client(app)
+    signup(founder, "founder@example.com")
+    html = founder.get("/admin").text
+    assert "Second" in html and "email alerts → founder@example.com" in html

@@ -15,33 +15,31 @@ from build import ROOT, load
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 FONT = (ROOT / "static" / "fonts" / "inter-latin-wght-normal.woff2").as_uri()
 STATIC = ROOT / "static"
+MARK = (STATIC / "favicon.svg").read_text(encoding="utf-8")
 
 BASE_CSS = f"""
 @font-face {{ font-family: Inter; src: url({FONT}) format("woff2-variations"); font-weight: 100 900; }}
 * {{ box-sizing: border-box; margin: 0; }}
 html, body {{ width: 100%; height: 100%; overflow: hidden; }}
 body {{ font-family: Inter, sans-serif; color: #eceef8; -webkit-font-smoothing: antialiased;
-  background: radial-gradient(700px 480px at 92% 8%, rgba(139,92,246,.42), transparent 70%),
-              radial-gradient(640px 420px at 0% 100%, rgba(91,91,240,.34), transparent 70%), #0c0e1a; }}
-.mark {{ display: grid; place-items: center; border-radius: 22%; color: #fff;
-  background: linear-gradient(135deg, #5b5bf0, #8b5cf6); }}
+  background: radial-gradient(700px 480px at 92% 8%, rgba(6,182,212,.30), transparent 70%),
+              radial-gradient(640px 420px at 0% 100%, rgba(37,99,235,.42), transparent 70%), #0a0f1c; }}
 """
-H_PATH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" width="54%" height="54%"><path d="M6 4v16M18 4v16M6 12h12"/></svg>'
 
 
 def og_html(c: dict) -> str:
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{BASE_CSS}
 body {{ padding: 72px 80px; display: flex; flex-direction: column; }}
 .brand {{ display: flex; align-items: center; gap: 16px; font-size: 34px; font-weight: 700; letter-spacing: -.03em; }}
-.brand .mark {{ width: 52px; height: 52px; }}
+.brand svg {{ width: 52px; height: 52px; filter: drop-shadow(0 6px 18px rgba(37,99,235,.45)); }}
 .eyebrow {{ margin-top: auto; align-self: flex-start; padding: 8px 18px; border-radius: 999px; font-size: 22px; font-weight: 600;
-  color: #c9c9ff; background: rgba(123,123,255,.16); border: 1px solid rgba(167,139,250,.35); }}
+  color: #b6f0fa; background: rgba(6,182,212,.12); border: 1px solid rgba(34,211,238,.38); }}
 h1 {{ margin-top: 26px; font-size: 76px; line-height: 1.02; font-weight: 750; letter-spacing: -.045em; max-width: 1000px; }}
-.grad {{ background: linear-gradient(100deg, #8f8fff, #c4a8ff); -webkit-background-clip: text; color: transparent; }}
+.grad {{ background: linear-gradient(100deg, #6ea8ff, #22d3ee); -webkit-background-clip: text; color: transparent; }}
 .foot {{ margin-top: 40px; display: flex; justify-content: space-between; font-size: 22px; color: #a9aec8; }}
 .foot b {{ color: #eceef8; font-weight: 600; }}
 </style></head><body>
-<div class="brand"><span class="mark">{H_PATH}</span>hubgentic</div>
+<div class="brand">{MARK}hubgentic</div>
 <p class="eyebrow">{escape(c["hero"]["eyebrow"])}</p>
 <h1>{escape(c["hero"]["title_a"])} <span class="grad">{escape(c["hero"]["title_b"])}</span></h1>
 <div class="foot"><b>hubgentic.ai</b><span>{escape(c["platform"]["badge"])} · {escape(c["platform"]["title"])}</span></div>
@@ -49,9 +47,11 @@ h1 {{ margin-top: 26px; font-size: 76px; line-height: 1.02; font-weight: 750; le
 
 
 def icon_html() -> str:
+    # Full-bleed square: iOS and Android apply their own corner mask.
+    square = MARK.replace('rx="9"', 'rx="0"')
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{BASE_CSS}
-body {{ background: linear-gradient(135deg, #5b5bf0, #8b5cf6); display: grid; place-items: center; color: #fff; }}
-</style></head><body>{H_PATH.replace('width="54%" height="54%"', 'width="56%" height="56%"')}</body></html>"""
+svg {{ display: block; width: 100vw; height: 100vh; }}
+</style></head><body>{square}</body></html>"""
 
 
 def shoot(html: str, size: tuple[int, int], out: Path, tmp: Path) -> None:
