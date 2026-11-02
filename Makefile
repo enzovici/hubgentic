@@ -20,6 +20,7 @@ deploy: test
 	git archive --format=tar HEAD | ssh $(DEPLOY_HOST) "set -e; \
 		stage=\$$(mktemp -d); trap 'rm -rf \$$stage' EXIT; \
 		tar -x -C \$$stage; echo $$rev > \$$stage/REVISION; \
+		chmod 755 \$$stage; \
 		rsync -a --delete --exclude /.venv \$$stage/ $(APP_DIR)/; \
 		cd $(APP_DIR) && $(UV_ENV) uv sync --frozen --no-dev -q; \
 		sudo systemctl restart hubgentic; \
