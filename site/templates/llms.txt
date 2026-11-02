@@ -1,0 +1,39 @@
+{% set en = content.en %}
+# Hubgentic
+
+> {{ en.meta.description }}
+
+Hubgentic is an AI consultancy and product studio based in Italy, working with small and mid-sized companies (SMEs) and early-stage startups in Italy and abroad, in Italian and English. It is operated by Complify PTE. LTD. (Singapore).
+
+## Services (available now)
+
+{% for s in en.services["items"] %}
+- **{{ s.title }}** ({{ s.tag }}): {{ s.body }} Includes: {{ s.points | join("; ") }}.
+{% endfor %}
+
+## How engagements work
+
+{% for step in en.method.steps %}
+{{ loop.index }}. **{{ step.title }}** ({{ step.meta }}): {{ step.body }}
+{% endfor %}
+
+## Platform (coming soon, early access by invitation)
+
+{{ en.platform.lead }}
+
+{% for f in en.platform.features %}
+- **{{ f.title }}**: {{ f.body }}
+{% endfor %}
+
+## FAQ
+
+{% for item in en.faq["items"] %}
+- **{{ item.q }}** {{ item.a }}
+{% endfor %}
+
+## Links
+
+- [Homepage (Italian)]({{ site_url }}{{ content.it.paths.home }})
+- [Homepage (English)]({{ site_url }}{{ en.paths.home }})
+- [Contact]({{ site_url }}{{ en.paths.home }}#{{ en.anchors.contact }}): {{ email }}
+- [Privacy notice]({{ site_url }}{{ en.paths.privacy }})

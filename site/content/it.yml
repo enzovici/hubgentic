@@ -1,0 +1,289 @@
+# Testi del sito www.hubgentic.ai — italiano (lingua principale).
+# Modifica qui il copy, poi `make site` (anteprima: `make site-dev`).
+
+lang: it
+locale: it_IT
+paths: {home: /, privacy: /privacy/, thanks: /grazie/}
+anchors: {services: servizi, method: metodo, platform: piattaforma, faq: faq, contact: contatti}
+switch: {label: English, short: EN}
+
+meta:
+  title: "Hubgentic — Strategia AI, agenti e ontologia per PMI e startup"
+  description: "Hubgentic aiuta PMI e startup a portare l'AI in produzione: strategia AI, agenti costruiti sui dati reali, visibilità sugli assistenti AI e, in arrivo, una piattaforma di ontologia e memoria per agenti."
+  og_title: "L'AI funziona solo se conosce la tua azienda."
+
+ui:
+  skip: "Vai al contenuto"
+  menu: "Menu"
+  close: "Chiudi"
+  home: "Hubgentic, home"
+  optional: "facoltativo"
+
+nav:
+  services: Servizi
+  method: Metodo
+  platform: Piattaforma
+  faq: FAQ
+  cta: Parliamone
+
+hero:
+  eyebrow: "Strategia AI · Agenti · Ontologia e memoria"
+  title_a: "L'AI funziona solo se"
+  title_b: "conosce la tua azienda."
+  lead: "Hubgentic aiuta PMI e startup a portare l'intelligenza artificiale dalla demo alla produzione: una strategia con priorità chiare, agenti costruiti sui tuoi dati reali e, in arrivo, il livello di ontologia e memoria che li rende affidabili."
+  cta_primary: "Prenota una call conoscitiva"
+  cta_secondary: "Scopri la piattaforma"
+  note: "Call gratuita di 30 minuti · in italiano o in inglese"
+
+diagram:
+  aria: "Schema: lo stesso cliente compare in quattro sistemi con dati diversi; Hubgentic li riconosce come un'unica entità con memoria e la rende disponibile a un agente AI."
+  col_systems: SISTEMI
+  col_ontology: ONTOLOGIA
+  col_agents: AGENTI
+  systems:
+    - {name: Gestionale, value: "ROSSI MARIO SRL"}
+    - {name: CRM, value: "Mario Rossi"}
+    - {name: E-commerce, value: "m.rossi@rossisrl.it"}
+    - {name: Excel, value: "IT01234567890"}
+  entity_kind: CLIENTE
+  entity_name: "Rossi Mario S.r.l."
+  entity_sources: "4 fonti"
+  entity_confidence: "conf. 0,97"
+  memory_title: MEMORIA
+  memory:
+    - "Ordine #1042 in consegna"
+    - "Preferisce l'email"
+  agent_kind: "AGENTE AI"
+  agent_name: "Assistenza clienti"
+
+problem:
+  kicker: "Il problema"
+  title: "Gli agenti AI non sbagliano per colpa del modello. Sbagliano perché non conoscono i tuoi dati."
+  lead: "Ogni azienda ha le stesse informazioni sparse in più sistemi, scritte in modi diversi. Una persona le ricollega con l'esperienza. Un agente no."
+  items:
+    - title: "Lo stesso cliente, quattro versioni"
+      body: "Nel gestionale è ROSSI MARIO SRL, nel CRM Mario Rossi, nell'e-commerce un indirizzo email, in Excel una partita IVA. Per un agente sono quattro clienti diversi."
+    - title: "Nessuna memoria"
+      body: "Ogni conversazione riparte da zero: l'agente non sa cosa è stato promesso, deciso o già risolto la settimana scorsa."
+    - title: "Nessuna tracciabilità"
+      body: "Quando un agente risponde, nessuno sa da quale sistema arriva il dato. Per i controlli interni, per l'AI Act e per la fiducia dei clienti non basta."
+
+services:
+  kicker: "Cosa facciamo"
+  title: "Rendiamo la tua azienda leggibile dall'AI. Dentro e fuori."
+  lead: "Dentro, perché i tuoi agenti lavorino su dati coerenti. Fuori, perché ChatGPT e gli altri assistenti ti trovino e ti raccomandino. Quattro servizi, disponibili da subito."
+  items:
+    - tag: PMI
+      title: "Strategia AI"
+      body: "Dal «dovremmo fare qualcosa con l'AI» a un piano con priorità, costi e ritorni attesi."
+      points:
+        - "Valutazione di processi, dati e competenze"
+        - "Mappa dei casi d'uso, ordinati per impatto"
+        - "Scelte make-or-buy e selezione dei fornitori"
+        - "Governance dei dati e preparazione all'AI Act"
+        - "Workshop per management e team"
+    - tag: Startup
+      title: "Advisory per startup"
+      body: "Un Head of AI a tempo parziale, finché non te ne serve uno a tempo pieno."
+      points:
+        - "Architettura e scelta dei modelli"
+        - "Strategia dati e vantaggio difendibile"
+        - "Costi di inferenza sotto controllo"
+        - "Revisione tecnica in vista di un round"
+    - tag: Implementazione
+      title: "Agenti in produzione"
+      body: "Agenti per assistenza clienti, back office e vendite, costruiti dentro i tuoi sistemi, non accanto."
+      points:
+        - "Integrazione con gestionale, CRM ed e-commerce"
+        - "Test e metriche di qualità prima del go-live"
+        - "Supervisione umana dove serve"
+        - "Monitoraggio continuo dopo il lancio"
+    - tag: Visibilità
+      title: "Visibilità sugli assistenti AI"
+      body: "Fai in modo che ChatGPT, Perplexity, Gemini e Claude descrivano correttamente la tua azienda e la raccomandino."
+      points:
+        - "Audit di come l'AI parla di te oggi"
+        - "Dati strutturati e contenuti leggibili dalle macchine"
+        - "Confronto con i concorrenti"
+        - "Monitoraggio nel tempo"
+
+method:
+  kicker: "Come lavoriamo"
+  title: "Passi brevi, risultati misurabili."
+  lead: "Niente progetti infiniti. Ogni fase ha un perimetro, una durata e un prezzo concordati prima di iniziare."
+  steps:
+    - meta: "30 minuti · gratuita"
+      title: "Call conoscitiva"
+      body: "Capiamo dove sei e cosa vuoi ottenere. Se l'AI non è la risposta giusta, te lo diciamo."
+    - meta: "2 settimane · prezzo fisso"
+      title: "Assessment"
+      body: "Analizziamo processi e dati, individuiamo i casi d'uso migliori e consegniamo una roadmap con priorità e stime."
+    - meta: "6–8 settimane"
+      title: "Pilota"
+      body: "Portiamo un caso d'uso in produzione, su dati reali, con metriche di successo decise insieme all'inizio."
+    - meta: "Su misura"
+      title: "Scala"
+      body: "Estendiamo ad altri processi e formiamo il tuo team, perché resti autonomo."
+
+platform:
+  badge: "In arrivo"
+  kicker: "La piattaforma"
+  title: "Ontologia e memoria per i tuoi agenti."
+  lead: "Stiamo costruendo il livello che manca tra i sistemi aziendali e gli agenti AI. Hubgentic collega gestionale, CRM e database senza spostare i dati, riconosce le stesse entità nei diversi sistemi, ne conserva la memoria e mostra da dove arriva ogni informazione."
+  features:
+    - title: "Un'ontologia condivisa"
+      body: "Un modello unico di clienti, fornitori, prodotti e contratti, indipendente dai software che usi."
+    - title: "Riconoscimento delle entità"
+      body: "Lo stesso cliente viene riconosciuto anche quando nomi, codici ed email non coincidono, con un livello di confidenza esplicito."
+    - title: "Memoria per gli agenti"
+      body: "Fatti, decisioni e interazioni restano disponibili nel tempo, con permessi definiti per ogni fonte."
+    - title: "Tracciabilità campo per campo"
+      body: "Ogni risposta indica sistema, record e campo di origine. Pronta per audit e verifiche."
+    - title: "I dati restano dove sono"
+      body: "Le fonti vengono interrogate in tempo reale, senza copie né migrazioni."
+    - title: "Aperta ai tuoi agenti"
+      body: "Si collega agli agenti che usi già tramite API e MCP, lo standard aperto per collegare strumenti e dati ai modelli AI."
+  cta: "Richiedi l'accesso anticipato"
+  note: "Stiamo selezionando poche aziende pilota con cui costruirla. Accesso su invito."
+  mock:
+    aria: "Esempio di scheda cliente unificata nella piattaforma Hubgentic"
+    kind: Cliente
+    name: "Rossi Mario S.r.l."
+    sources: "3 fonti"
+    rows:
+      - {label: "Ragione sociale", value: "ROSSI MARIO SRL", source: Gestionale, tone: s1}
+      - {label: "Partita IVA", value: "IT01234567890", source: Gestionale, tone: s1}
+      - {label: "Email", value: "m.rossi@rossisrl.it", source: CRM, tone: s2}
+      - {label: "Ultimo ordine", value: "#1042 · in consegna", source: E-commerce, tone: s3}
+    match_label: "Stessa entità"
+    match_rule: "P.IVA + ragione sociale"
+    match_score: "0,97"
+    memory_title: Memoria
+    memory:
+      - {when: "12 ott", text: "Ha chiesto uno sconto sui volumi, in valutazione"}
+      - {when: "28 ott", text: "Preferisce essere contattato via email"}
+
+audience:
+  kicker: "Per chi"
+  title: "Per chi vuole risultati, non demo."
+  items:
+    - title: PMI
+      body: "Manifattura, distribuzione e servizi: aziende con dati sparsi tra gestionale, CRM e fogli Excel che vogliono un ritorno misurabile."
+    - title: "Startup early-stage"
+      body: "Team pre-seed e seed che costruiscono prodotti con l'AI e vogliono decisioni tecniche solide fin dal primo giorno."
+    - title: "Settori regolamentati"
+      body: "Finanza, assicurazioni e sanità: dove ogni risposta di un agente deve essere spiegabile e verificabile."
+  where: "Dall'Italia, per aziende in Italia e all'estero. In italiano o in inglese, da remoto o in presenza."
+
+principles:
+  kicker: "Come la pensiamo"
+  title: "Quattro impegni, per iscritto."
+  items:
+    - title: "Risultati misurabili"
+      body: "Ogni progetto parte da metriche concordate. Se non si può misurare, non lo facciamo."
+    - title: "Indipendenti dai fornitori"
+      body: "Consigliamo la tecnologia più adatta a te, anche quando non è la nostra."
+    - title: "I tuoi dati restano tuoi"
+      body: "Accesso minimo necessario, nessuna copia superflua, nel rispetto del GDPR."
+    - title: "Chiarezza"
+      body: "Prezzi fissi, tempi definiti, zero gergo."
+
+faq:
+  title: "Domande frequenti"
+  items:
+    - q: "Quanto costa?"
+      a: "La call conoscitiva è gratuita. Assessment e pilota hanno un prezzo fisso, che definiamo dopo la prima call in base al perimetro. Nessuna sorpresa a fine mese."
+    - q: "Dobbiamo spostare o migrare i nostri dati?"
+      a: "No. Lavoriamo sui sistemi che usi già. La piattaforma interroga le fonti in tempo reale, senza copiarle."
+    - q: "Siamo una piccola azienda: ha senso per noi?"
+      a: "Spesso sì: le PMI hanno processi più corti e decisioni più rapide, e un solo caso d'uso ben scelto può ripagarsi in fretta. Nella call capiamo insieme se c'è un ritorno chiaro. Se non c'è, te lo diciamo."
+    - q: "Quando sarà disponibile la piattaforma?"
+      a: "È in sviluppo con un gruppo ristretto di aziende pilota. Richiedi l'accesso anticipato: ti contattiamo quando apriamo nuovi posti."
+    - q: "Come gestite l'AI Act?"
+      a: "Ti aiutiamo a classificare i casi d'uso, a documentarli e a garantire tracciabilità e supervisione umana dove richiesto. Per gli aspetti legali lavoriamo insieme ai tuoi consulenti."
+    - q: "Lavorate anche fuori dall'Italia?"
+      a: "Sì. Lavoriamo in italiano e in inglese, da remoto e in presenza quando serve."
+
+contact:
+  kicker: "Contatti"
+  title: "Parliamone."
+  lead: "Raccontaci dove sei e cosa vuoi ottenere. Ti risponde una persona, non un bot."
+  next_title: "Cosa succede dopo"
+  next:
+    - "Leggiamo la tua richiesta."
+    - "Ti proponiamo un orario per una call di 30 minuti."
+    - "Se c'è un caso d'uso concreto, ti inviamo una proposta a prezzo fisso."
+  email_lead: "Preferisci l'email?"
+  name: "Nome e cognome"
+  email: "Email di lavoro"
+  company: "Azienda"
+  segment: "La tua realtà"
+  segments:
+    - {value: pmi, label: PMI}
+    - {value: startup, label: Startup}
+    - {value: enterprise, label: "Grande azienda"}
+    - {value: other, label: Altro}
+  interests: "Ti interessa"
+  interest_options:
+    - {value: strategy, label: "Strategia AI"}
+    - {value: startup, label: "Advisory per startup"}
+    - {value: agents, label: "Agenti in produzione"}
+    - {value: visibility, label: "Visibilità sugli assistenti AI"}
+    - {value: platform, label: "Accesso anticipato alla piattaforma"}
+  message: "Messaggio"
+  message_placeholder: "Qual è la sfida o l'obiettivo?"
+  consent_a: "Ho letto l'"
+  consent_link: "informativa privacy"
+  consent_b: "."
+  submit: "Invia richiesta"
+  sending: "Invio in corso…"
+  error: "Non siamo riusciti a inviare la richiesta. Controlla i campi obbligatori e riprova, oppure scrivici via email."
+
+thanks:
+  title: "Grazie, abbiamo ricevuto la tua richiesta."
+  body: "Ti rispondiamo personalmente all'indirizzo che ci hai indicato. Se vuoi aggiungere qualcosa nel frattempo, scrivici a"
+  back: "Torna alla home"
+
+footer:
+  tagline: "Strategia AI, agenti e ontologia per PMI e startup."
+  col_site: Sito
+  col_company: Hubgentic
+  contact: Contatti
+  privacy: Privacy
+  login: "Accedi alla piattaforma"
+  linkedin: LinkedIn
+  rights: "Tutti i diritti riservati."
+
+not_found:
+  title: "Pagina non trovata"
+  body: "La pagina che cerchi non esiste o è stata spostata."
+  back: "Torna alla home"
+
+privacy:
+  title: "Informativa sulla privacy"
+  updated: "Ultimo aggiornamento: novembre 2026"
+  intro: "Questa informativa spiega quali dati personali raccogliamo quando visiti www.hubgentic.ai o ci scrivi, perché lo facciamo e quali sono i tuoi diritti ai sensi del Regolamento (UE) 2016/679 (GDPR)."
+  sections:
+    - title: "Titolare del trattamento"
+      body:
+        - "Il titolare del trattamento è Complify PTE. LTD. (UEN 202400236R), 32 Pekin Street, Singapore, che gestisce il marchio Hubgentic. Per qualsiasi richiesta relativa alla privacy scrivi a info@hubgentic.ai."
+    - title: "Quali dati raccogliamo"
+      body:
+        - "Modulo di contatto: nome e cognome, email, azienda, tipo di realtà, interessi e il messaggio che scegli di inviarci."
+        - "Dati tecnici: quando visiti il sito, il server registra informazioni tecniche come indirizzo IP, data e ora della richiesta e tipo di browser."
+    - title: "Perché li usiamo e su quale base"
+      body:
+        - "Per rispondere alla tua richiesta e, se lo chiedi, prepararti una proposta: misure precontrattuali adottate su tua richiesta (art. 6.1.b GDPR)."
+        - "Per proteggere il sito da abusi e garantirne la sicurezza: legittimo interesse del titolare (art. 6.1.f GDPR)."
+        - "Non usiamo i tuoi dati per newsletter o marketing senza un tuo consenso esplicito e separato, e non li vendiamo a terzi."
+    - title: "Cookie"
+      body:
+        - "Questo sito non usa cookie, strumenti di analisi o di tracciamento. I caratteri tipografici sono ospitati sui nostri server: la tua visita non viene comunicata a servizi di terze parti."
+    - title: "Dove e per quanto tempo"
+      body:
+        - "Il sito e i dati del modulo sono ospitati su server in Svizzera, Paese riconosciuto dalla Commissione europea come adeguato per la protezione dei dati."
+        - "Conserviamo le richieste di contatto per il tempo necessario a gestirle e comunque non oltre 24 mesi dall'ultimo contatto, salvo obblighi di legge. I log tecnici sono conservati per un periodo limitato, per sole finalità di sicurezza."
+    - title: "I tuoi diritti"
+      body:
+        - "Puoi chiedere in qualsiasi momento l'accesso ai tuoi dati, la rettifica, la cancellazione, la limitazione del trattamento, la portabilità o opporti al trattamento, scrivendo a info@hubgentic.ai."
+        - "Hai inoltre il diritto di proporre reclamo al Garante per la protezione dei dati personali (www.garanteprivacy.it)."

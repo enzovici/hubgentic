@@ -1,0 +1,6 @@
+# Everyone is welcome, AI crawlers included: we want assistants to describe us accurately.
+User-agent: *
+Allow: /
+Disallow: /lead
+
+Sitemap: {{ site_url }}/sitemap.xml

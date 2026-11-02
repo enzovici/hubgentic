@@ -110,6 +110,22 @@ Alternatively, deploy anywhere that runs a container with a persistent volume at
 Single-process SQLite is fine for early access; move to Postgres before
 running more than one instance.
 
+## Marketing site (www.hubgentic.ai)
+
+A static IT/EN site in `site/`: copy in `site/content/{it,en}.yml`, layout in
+`site/templates/`, built with Jinja2 into `site/dist/`. No cookies, no
+third-party requests (fonts are self-hosted), strict CSP.
+
+```bash
+make site-dev     # preview on http://localhost:8080, rebuilds on every change
+make deploy-site  # build → upload to the VPS (/var/www/hubgentic-site)
+```
+
+The contact form posts to `/lead`, which Caddy forwards to the web app; requests
+show up under **Leads** in `/admin`. Run `uv run python site/make_images.py`
+(needs Google Chrome) after changing the hero copy to refresh the social-share
+images. Caddy config for both hosts: `deploy/Caddyfile.hubgentic`.
+
 ## Architecture
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the component map, request

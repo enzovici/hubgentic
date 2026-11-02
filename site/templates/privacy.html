@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ c.privacy.title }} · Hubgentic{% endblock %}
+{% block description %}{{ c.privacy.intro }}{% endblock %}
+{% block og_title %}{{ c.privacy.title }} · Hubgentic{% endblock %}
+{% block main %}
+<article class="section prose-page">
+  <div class="wrap prose">
+    <h1>{{ c.privacy.title }}</h1>
+    <p class="muted">{{ c.privacy.updated }}</p>
+    <p>{{ c.privacy.intro }}</p>
+    {% for s in c.privacy.sections %}
+    <h2>{{ s.title }}</h2>
+    {% for para in s.body %}<p>{{ para }}</p>{% endfor %}
+    {% endfor %}
+  </div>
+</article>
+{% endblock %}

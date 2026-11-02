@@ -7,10 +7,29 @@
   <a class="btn btn-sm" href="/app">Back to app</a>
 </header>
 <div class="content stack" style="margin:0 auto">
-  <div class="grid g3">
+  <div class="grid g4">
+    <div class="card stat"><div class="k">Leads</div><div class="v">{{ leads | length }}</div></div>
     <div class="card stat"><div class="k">Sign-ups</div><div class="v">{{ signups | length }}</div></div>
     <div class="card stat"><div class="k">Workspaces</div><div class="v">{{ usage | length }}</div></div>
     <div class="card stat"><div class="k">Feedback notes</div><div class="v">{{ feedback | length }}</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>Leads</h2><p class="faint small">Contact form on www.hubgentic.ai</p></div>
+    {% if leads %}
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>When</th><th>Who</th><th>Company</th><th>Segment</th><th>Interests</th><th>Message</th></tr></thead>
+      <tbody>{% for l in leads %}
+      <tr>
+        <td class="faint nowrap">{{ l.created_at | ago }} <span class="badge">{{ l.lang }}</span></td>
+        <td>{{ l.name }}<div class="small"><a href="mailto:{{ l.email }}">{{ l.email }}</a></div></td>
+        <td class="muted">{{ l.company or '—' }}</td>
+        <td class="muted">{{ l.segment or '—' }}</td>
+        <td>{% for i in (l.interests or '').split(',') if i %}<span class="badge badge-accent">{{ i }}</span> {% endfor %}</td>
+        <td style="white-space:pre-wrap;max-width:420px">{{ l.message or '' }}</td>
+      </tr>{% endfor %}</tbody>
+    </table></div>
+    {% else %}<div class="empty">No leads yet.</div>{% endif %}
   </div>
 
   <div class="card">

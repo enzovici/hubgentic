@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ c.thanks.title }} · Hubgentic{% endblock %}
+{% block main %}
+<section class="section center-page">
+  <div class="wrap narrow">
+    <span class="done" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+    <h1>{{ c.thanks.title }}</h1>
+    <p class="sec-lead">{{ c.thanks.body }} <a href="mailto:{{ email }}">{{ email }}</a>.</p>
+    <a class="btn btn-primary btn-lg" href="{{ c.paths.home }}">{{ c.thanks.back }}</a>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% from "_diagram.html" import diagram %}
+{% set a = c.anchors %}
+{% block main %}
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">{{ c.hero.eyebrow }}</p>
+      <h1>{{ c.hero.title_a }} <span class="grad">{{ c.hero.title_b }}</span></h1>
+      <p class="lead">{{ c.hero.lead }}</p>
+      <div class="cta-row">
+        <a class="btn btn-primary btn-lg" href="#{{ a.contact }}">{{ c.hero.cta_primary }}</a>
+        <a class="btn btn-ghost btn-lg" href="#{{ a.platform }}">{{ c.hero.cta_secondary }} <span aria-hidden="true">→</span></a>
+      </div>
+      <p class="note">{{ c.hero.note }}</p>
+    </div>
+    {{ diagram(c.diagram) }}
+  </div>
+</section>
+
+<section class="section" aria-labelledby="problem-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">{{ c.problem.kicker }}</p>
+      <h2 id="problem-title">{{ c.problem.title }}</h2>
+      <p class="sec-lead">{{ c.problem.lead }}</p>
+    </div>
+    <div class="grid g3">
+      {% for item in c.problem["items"] %}
+      <article class="card problem">
+        <span class="num" aria-hidden="true">0{{ loop.index }}</span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.body }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="{{ a.services }}" aria-labelledby="services-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">{{ c.services.kicker }}</p>
+      <h2 id="services-title">{{ c.services.title }}</h2>
+      <p class="sec-lead">{{ c.services.lead }}</p>
+    </div>
+    <div class="grid g2">
+      {% for s in c.services["items"] %}
+      <article class="card service">
+        <span class="tag">{{ s.tag }}</span>
+        <h3>{{ s.title }}</h3>
+        <p>{{ s.body }}</p>
+        <ul class="checks">{% for p in s.points %}<li>{{ p }}</li>{% endfor %}</ul>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="{{ a.method }}" aria-labelledby="method-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">{{ c.method.kicker }}</p>
+      <h2 id="method-title">{{ c.method.title }}</h2>
+      <p class="sec-lead">{{ c.method.lead }}</p>
+    </div>
+    <ol class="steps">
+      {% for step in c.method.steps %}
+      <li class="step">
+        <span class="step-n" aria-hidden="true">{{ loop.index }}</span>
+        <p class="step-meta">{{ step.meta }}</p>
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.body }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="section platform" id="{{ a.platform }}" aria-labelledby="platform-title">
+  <div class="wrap platform-grid">
+    <div>
+      <p class="badge-soon"><span class="pulse" aria-hidden="true"></span>{{ c.platform.badge }}</p>
+      <p class="kicker">{{ c.platform.kicker }}</p>
+      <h2 id="platform-title">{{ c.platform.title }}</h2>
+      <p class="sec-lead">{{ c.platform.lead }}</p>
+      <div class="features">
+        {% for f in c.platform.features %}
+        <div class="feature">
+          <h3>{{ f.title }}</h3>
+          <p>{{ f.body }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-light btn-lg" href="#{{ a.contact }}" data-interest="platform">{{ c.platform.cta }}</a>
+      </div>
+      <p class="note">{{ c.platform.note }}</p>
+    </div>
+    {% set m = c.platform.mock %}
+    <figure class="mock" aria-label="{{ m.aria }}">
+      <div class="mock-head">
+        <div>
+          <span class="mock-kind">{{ m.kind }}</span>
+          <strong class="mock-name">{{ m.name }}</strong>
+        </div>
+        <span class="mock-pill">{{ m.sources }}</span>
+      </div>
+      <dl class="mock-rows">
+        {% for r in m.rows %}
+        <div class="mock-row">
+          <dt>{{ r.label }}</dt>
+          <dd><span class="mono">{{ r.value }}</span><span class="src src-{{ r.tone }}">{{ r.source }}</span></dd>
+        </div>
+        {% endfor %}
+      </dl>
+      <div class="mock-match">
+        <span class="ok-dot" aria-hidden="true"></span>
+        <span>{{ m.match_label }} · <span class="mono">{{ m.match_rule }}</span></span>
+        <span class="meter" aria-hidden="true"><span></span></span>
+        <span class="mono">{{ m.match_score }}</span>
+      </div>
+      <div class="mock-mem">
+        <p class="mock-mem-t">{{ m.memory_title }}</p>
+        <ul>
+          {% for item in m.memory %}<li><span class="mono when">{{ item.when }}</span>{{ item.text }}</li>{% endfor %}
+        </ul>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="audience-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">{{ c.audience.kicker }}</p>
+      <h2 id="audience-title">{{ c.audience.title }}</h2>
+    </div>
+    <div class="grid g3">
+      {% for item in c.audience["items"] %}
+      <article class="card audience">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.body }}</p>
+      </article>
+      {% endfor %}
+    </div>
+    <p class="where"><span class="pin" aria-hidden="true"></span>{{ c.audience.where }}</p>
+  </div>
+</section>
+
+<section class="section alt" aria-labelledby="principles-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">{{ c.principles.kicker }}</p>
+      <h2 id="principles-title">{{ c.principles.title }}</h2>
+    </div>
+    <div class="grid g4 principles">
+      {% for item in c.principles["items"] %}
+      <div class="principle">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.body }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="{{ a.faq }}" aria-labelledby="faq-title">
+  <div class="wrap faq-grid">
+    <h2 id="faq-title">{{ c.faq.title }}</h2>
+    <div class="faq">
+      {% for item in c.faq["items"] %}
+      <details>
+        <summary>{{ item.q }}</summary>
+        <p>{{ item.a }}</p>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section contact" id="{{ a.contact }}" aria-labelledby="contact-title">
+  <div class="wrap contact-grid">
+    <div class="contact-copy">
+      <p class="kicker">{{ c.contact.kicker }}</p>
+      <h2 id="contact-title">{{ c.contact.title }}</h2>
+      <p class="sec-lead">{{ c.contact.lead }}</p>
+      <h3>{{ c.contact.next_title }}</h3>
+      <ol class="next">{% for n in c.contact.next %}<li>{{ n }}</li>{% endfor %}</ol>
+      <p class="email-alt">{{ c.contact.email_lead }} <a href="mailto:{{ email }}">{{ email }}</a></p>
+    </div>
+    {% set f = c.contact %}
+    <form class="card form" method="post" action="/lead" data-lead>
+      <input type="hidden" name="lang" value="{{ c.lang }}">
+      <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <p class="form-error" role="alert" hidden data-form-error>{{ f.error }} <a href="mailto:{{ email }}">{{ email }}</a></p>
+      <div class="f-two">
+        <div class="field">
+          <label for="f-name">{{ f.name }}</label>
+          <input id="f-name" name="name" type="text" required maxlength="120" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="f-email">{{ f.email }}</label>
+          <input id="f-email" name="email" type="email" required maxlength="200" autocomplete="email">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-company">{{ f.company }} <span class="opt">({{ c.ui.optional }})</span></label>
+        <input id="f-company" name="company" type="text" maxlength="160" autocomplete="organization">
+      </div>
+      <fieldset class="field">
+        <legend>{{ f.segment }} <span class="opt">({{ c.ui.optional }})</span></legend>
+        <div class="opts">
+          {% for o in f.segments %}<label class="opt-pill"><input type="radio" name="segment" value="{{ o.value }}"><span>{{ o.label }}</span></label>{% endfor %}
+        </div>
+      </fieldset>
+      <fieldset class="field">
+        <legend>{{ f.interests }} <span class="opt">({{ c.ui.optional }})</span></legend>
+        <div class="opts">
+          {% for o in f.interest_options %}<label class="opt-pill"><input type="checkbox" name="interests" value="{{ o.value }}"><span>{{ o.label }}</span></label>{% endfor %}
+        </div>
+      </fieldset>
+      <div class="field">
+        <label for="f-message">{{ f.message }} <span class="opt">({{ c.ui.optional }})</span></label>
+        <textarea id="f-message" name="message" rows="4" maxlength="4000" placeholder="{{ f.message_placeholder }}"></textarea>
+      </div>
+      <label class="consent"><input type="checkbox" name="consent" value="1" required><span>{{ f.consent_a }}<a href="{{ c.paths.privacy }}">{{ f.consent_link }}</a>{{ f.consent_b }}</span></label>
+      <button class="btn btn-primary btn-lg btn-block" type="submit" data-sending="{{ f.sending }}">{{ f.submit }}</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

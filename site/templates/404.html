@@ -1,0 +1,32 @@
+{# Served for any missing path; bilingual because we can't know which language was wanted. #}
+{% set en = content.en %}
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ c.not_found.title }} · Hubgentic</title>
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/site.css?v={{ v }}">
+</head>
+<body>
+<main class="section center-page">
+  <div class="wrap narrow">
+    <a class="brand brand-center" href="/" aria-label="{{ c.ui.home }}">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 4v16M18 4v16M6 12h12"/></svg></span>
+      <span>hubgentic</span>
+    </a>
+    <p class="big-code" aria-hidden="true">404</p>
+    <h1>{{ c.not_found.title }}</h1>
+    <p class="sec-lead">{{ c.not_found.body }}</p>
+    <p class="sec-lead" lang="en">{{ en.not_found.body }}</p>
+    <div class="cta-row cta-center">
+      <a class="btn btn-primary btn-lg" href="/">{{ c.not_found.back }}</a>
+      <a class="btn btn-ghost btn-lg" href="/en/" lang="en">{{ en.not_found.back }}</a>
+    </div>
+  </div>
+</main>
+</body>
+</html>

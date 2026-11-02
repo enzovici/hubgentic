@@ -227,3 +227,30 @@ def test_graph_payloads(app):
 
     onto = elements(c.get(f"/app/{slug}/ontology").text, "ontology-graph")
     assert {"entity", "attribute", "source", "binding", "rel"} <= {e["kind"] for e in onto}
+
+
+def test_lead_form(app):
+    site = client(app)
+    form = {"name": "Giulia Verdi", "email": "Giulia@Example.com", "company": "Verdi SpA",
+            "segment": "pmi", "interests": ["strategy", "platform", "bogus"],
+            "message": "Vorremmo capire da dove partire.", "consent": "1", "lang": "it"}
+    r = site.post("/lead", data=form, headers={"origin": "http://testserver"}, follow_redirects=False)
+    assert r.status_code == 303 and r.headers["location"] == "/grazie/"
+
+    # Missing consent or a bad email bounces back to the form; nothing is stored.
+    r = site.post("/lead", data={**form, "consent": ""}, follow_redirects=False)
+    assert r.headers["location"] == "/?form=error#contatti"
+    r = site.post("/lead", data={**form, "email": "nope", "lang": "en"}, follow_redirects=False)
+    assert r.headers["location"] == "/en/?form=error#contact"
+    # Bots filling the honeypot see success but are dropped.
+    r = site.post("/lead", data={**form, "website": "http://spam"}, follow_redirects=False)
+    assert r.headers["location"] == "/grazie/"
+    # Posting from another site is refused like every other form.
+    r = site.post("/lead", data=form, headers={"origin": "https://evil.example"})
+    assert r.status_code == 403
+
+    founder = client(app)
+    signup(founder, "founder@example.com")
+    html = founder.get("/admin").text
+    assert html.count("Giulia Verdi") == 1
+    assert "giulia@example.com" in html and "platform" in html and "bogus" not in html

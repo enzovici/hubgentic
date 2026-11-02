@@ -38,6 +38,9 @@ FLASH_COOKIE = "hg_flash"
 SESSION_TTL = timedelta(days=14)
 INVITE_TTL = timedelta(days=7)
 ROLES = ("owner", "admin", "member")
+# Option values of the marketing site's contact form (site/content/*.yml).
+LEAD_SEGMENTS = ("pmi", "startup", "enterprise", "other")
+LEAD_INTERESTS = ("strategy", "startup", "agents", "visibility", "platform")
 
 EXAMPLES = [
     {
@@ -90,6 +93,7 @@ def create_app(
         signup_open = os.environ.get("HUBGENTIC_SIGNUP", "open") == "open"
     login_throttle = sec.Throttle(limit=8, window=300)
     feedback_throttle = sec.Throttle(limit=10, window=3600)
+    lead_throttle = sec.Throttle(limit=5, window=3600)
 
     app = FastAPI(title="hubgentic", docs_url="/api/docs", redoc_url=None)
     app.state.db = db
@@ -426,6 +430,33 @@ def create_app(
             form.get("sentiment", "")[:20], message, now(),
         )
         return redirect(back, "Thank you — this goes straight to the founder.")
+
+    @app.post("/lead")
+    async def lead(request: Request):
+        """Contact form on the marketing site; Caddy proxies www.hubgentic.ai/lead here."""
+        form = await request.form()
+        en = form.get("lang") == "en"
+        thanks = "/en/thanks/" if en else "/grazie/"
+        retry = "/en/?form=error#contact" if en else "/?form=error#contatti"
+        if form.get("website"):  # honeypot: bots get a convincing success page
+            return RedirectResponse(thanks, status_code=303)
+        name = str(form.get("name", "")).strip()[:120]
+        email = str(form.get("email", "")).strip().lower()[:200]
+        if not name or not sec.EMAIL_RE.match(email) or not form.get("consent"):
+            return RedirectResponse(retry, status_code=303)
+        client = request.client.host if request.client else "?"
+        if not lead_throttle.allow(client):
+            return RedirectResponse(retry, status_code=303)
+        segment = str(form.get("segment", ""))
+        interests = [str(i) for i in form.getlist("interests") if i in LEAD_INTERESTS]
+        db.run(
+            "INSERT INTO leads (name, email, company, segment, interests, message, lang, created_at) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            name, email, str(form.get("company", "")).strip()[:160] or None,
+            segment if segment in LEAD_SEGMENTS else None, ",".join(interests) or None,
+            str(form.get("message", "")).strip()[:4000] or None, "en" if en else "it", now(),
+        )
+        return RedirectResponse(thanks, status_code=303)
 
     # ── workspace entry points ──────────────────────────────────────────
 
@@ -814,6 +845,7 @@ def create_app(
             raise HTTPException(404)
         return render(
             request, "admin.html", user=user,
+            leads=db.all("SELECT * FROM leads ORDER BY id DESC LIMIT 300"),
             feedback=db.all(
                 "SELECT f.*, u.email, t.name AS tenant_name FROM feedback f "
                 "LEFT JOIN users u ON u.id = f.user_id LEFT JOIN tenants t ON t.id = f.tenant_id "

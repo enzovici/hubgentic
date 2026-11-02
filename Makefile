@@ -35,3 +35,21 @@ status:
 
 logs:
 	ssh $(DEPLOY_HOST) "sudo journalctl -u hubgentic -n 100 --no-pager"
+
+# ── marketing site (www.hubgentic.ai) ──────────────────────────────────
+SITE_DIR := /var/www/hubgentic-site
+
+.PHONY: site site-dev deploy-site
+
+site:
+	uv run python site/build.py
+
+site-dev:
+	uv run python site/serve.py
+
+# Like `deploy`, only ships committed copy so the live site matches a revision.
+deploy-site: site
+	@git diff --quiet HEAD -- site || { echo "Uncommitted changes in site/ — commit before deploying."; exit 1; }
+	rsync -rlz --delete --chmod=D755,F644 site/dist/ $(DEPLOY_HOST):$(SITE_DIR)/
+	@curl -sf -o /dev/null https://www.hubgentic.ai/ && echo "✓ https://www.hubgentic.ai is up on $$(git rev-parse --short HEAD)" \
+		|| echo "Uploaded to $(DEPLOY_HOST):$(SITE_DIR); www.hubgentic.ai is not serving it yet (DNS or Caddy)."

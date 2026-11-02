@@ -97,6 +97,18 @@ CREATE TABLE IF NOT EXISTS feedback (
     message     TEXT NOT NULL,
     created_at  TEXT NOT NULL
 );
+-- Requests from the marketing site's contact form (www.hubgentic.ai).
+CREATE TABLE IF NOT EXISTS leads (
+    id          INTEGER PRIMARY KEY,
+    name        TEXT NOT NULL,
+    email       TEXT NOT NULL,
+    company     TEXT,
+    segment     TEXT,
+    interests   TEXT,
+    message     TEXT,
+    lang        TEXT NOT NULL,
+    created_at  TEXT NOT NULL
+);
 """
 
 

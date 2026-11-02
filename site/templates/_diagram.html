@@ -1,0 +1,81 @@
+{# Hero diagram: four systems → one entity with memory → an agent.
+   Two layouts of the same content; CSS shows one per breakpoint. #}
+{% macro defs(id) %}
+<defs>
+  <linearGradient id="{{ id }}-g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" class="g-a"/><stop offset="1" class="g-b"/>
+  </linearGradient>
+  <marker id="{{ id }}-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0L10 5L0 10z" class="d-arrow"/>
+  </marker>
+</defs>
+{% endmacro %}
+
+{% macro system(s, i, x, y, w, h) %}
+<g class="d-sysbox">
+  <rect x="{{ x }}" y="{{ y }}" width="{{ w }}" height="{{ h }}" rx="10" class="d-box"/>
+  <circle cx="{{ x + 16 }}" cy="{{ y + 19 }}" r="4" class="d-dot s{{ i }}"/>
+  <text x="{{ x + 27 }}" y="{{ y + 23 }}" class="d-sys">{{ s.name }}</text>
+  <text x="{{ x + 12 }}" y="{{ y + h - 13 }}" class="d-val">{{ s.value }}</text>
+</g>
+{% endmacro %}
+
+{% macro entity(d, id, x, y, w) %}
+<rect x="{{ x }}" y="{{ y }}" width="{{ w }}" height="92" rx="14" fill="url(#{{ id }}-g)" class="d-entity"/>
+<text x="{{ x + 16 }}" y="{{ y + 24 }}" class="d-ek">{{ d.entity_kind }}</text>
+<text x="{{ x + 16 }}" y="{{ y + 46 }}" class="d-en">{{ d.entity_name }}</text>
+<rect x="{{ x + 16 }}" y="{{ y + 58 }}" width="62" height="22" rx="11" class="d-chip"/>
+<text x="{{ x + 47 }}" y="{{ y + 73 }}" class="d-chip-t" text-anchor="middle">{{ d.entity_sources }}</text>
+<rect x="{{ x + 84 }}" y="{{ y + 58 }}" width="76" height="22" rx="11" class="d-chip"/>
+<text x="{{ x + 122 }}" y="{{ y + 73 }}" class="d-chip-t" text-anchor="middle">{{ d.entity_confidence }}</text>
+{% endmacro %}
+
+{% macro memory(d, x, y, w) %}
+<rect x="{{ x }}" y="{{ y }}" width="{{ w }}" height="78" rx="12" class="d-mem"/>
+<text x="{{ x + 14 }}" y="{{ y + 22 }}" class="d-mt">{{ d.memory_title }}</text>
+{% for m in d.memory %}
+<text x="{{ x + 14 }}" y="{{ y + 44 + loop.index0 * 19 }}" class="d-mi">· {{ m }}</text>
+{% endfor %}
+{% endmacro %}
+
+{% macro agent(d, x, y, w) %}
+<rect x="{{ x }}" y="{{ y }}" width="{{ w }}" height="78" rx="12" class="d-agent"/>
+<circle cx="{{ x + 18 }}" cy="{{ y + 19 }}" r="4" class="d-live"/>
+<text x="{{ x + 29 }}" y="{{ y + 23 }}" class="d-ak">{{ d.agent_kind }}</text>
+<text x="{{ x + 14 }}" y="{{ y + 50 }}" class="d-an">{{ d.agent_name }}</text>
+{% endmacro %}
+
+{% macro diagram(d) %}
+<figure class="diagram" role="img" aria-label="{{ d.aria }}">
+  {# Desktop: three columns #}
+  <svg class="d-wide" viewBox="0 0 600 348" aria-hidden="true" focusable="false">
+    {{ defs("dw") }}
+    <text x="12" y="16" class="d-col">{{ d.col_systems }}</text>
+    <text x="226" y="16" class="d-col">{{ d.col_ontology }}</text>
+    <text x="444" y="16" class="d-col">{{ d.col_agents }}</text>
+    {% for s in d.systems %}{% set cy = 58 + loop.index0 * 84 %}
+    <path d="M190 {{ cy }} C210 {{ cy }} 206 {{ 150 }} 226 {{ 150 }}" class="d-edge s{{ loop.index }}"/>
+    {% endfor %}
+    {% for s in d.systems %}{{ system(s, loop.index, 12, 30 + loop.index0 * 84, 178, 56) }}{% endfor %}
+    {{ entity(d, "dw", 226, 104, 192) }}
+    <path d="M322 196 L322 230" class="d-link"/>
+    {{ memory(d, 226, 230, 192) }}
+    <path d="M418 150 L442 150" class="d-flow" marker-end="url(#dw-arrow)"/>
+    {{ agent(d, 444, 111, 148) }}
+  </svg>
+  {# Mobile: stacked #}
+  <svg class="d-narrow" viewBox="0 0 340 392" aria-hidden="true" focusable="false">
+    {{ defs("dn") }}
+    <text x="6" y="12" class="d-col">{{ d.col_systems }}</text>
+    {% for x, tone in ((48, 1), (128, 3), (212, 2), (292, 4)) %}
+    <path d="M{{ x }} 140 C{{ x }} 162 170 154 170 178" class="d-edge s{{ tone }}"/>
+    {% endfor %}
+    {% for s in d.systems %}{{ system(s, loop.index, 6 + (loop.index0 % 2) * 166, 22 + (loop.index0 // 2) * 64, 162, 56) }}{% endfor %}
+    {{ entity(d, "dn", 70, 178, 200) }}
+    <path d="M130 270 C130 286 88 282 88 300" class="d-link"/>
+    <path d="M210 270 C210 286 252 282 252 300" class="d-flow" marker-end="url(#dn-arrow)"/>
+    {{ memory(d, 6, 302, 162) }}
+    {{ agent(d, 172, 302, 162) }}
+  </svg>
+</figure>
+{% endmacro %}

@@ -7,6 +7,12 @@
       "runtimeArgs": ["run", "hubgentic-web"],
       "port": 8000,
       "env": { "HUBGENTIC_ADMIN_EMAILS": "vincenzo.vicidomini@gmail.com" }
+    },
+    {
+      "name": "hubgentic-site",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": ["run", "python", "site/serve.py"],
+      "port": 8080
     }
   ]
 }

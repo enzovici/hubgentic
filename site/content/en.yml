@@ -1,0 +1,289 @@
+# Copy for www.hubgentic.ai/en/ — English.
+# Edit here, then `make site` (preview: `make site-dev`).
+
+lang: en
+locale: en_GB
+paths: {home: /en/, privacy: /en/privacy/, thanks: /en/thanks/}
+anchors: {services: services, method: method, platform: platform, faq: faq, contact: contact}
+switch: {label: Italiano, short: IT}
+
+meta:
+  title: "Hubgentic — AI strategy, agents and ontology for SMEs and startups"
+  description: "Hubgentic helps SMEs and startups put AI into production: AI strategy, agents built on real data, visibility on AI assistants and, coming soon, an ontology and memory platform for agents."
+  og_title: "AI only works when it knows your business."
+
+ui:
+  skip: "Skip to content"
+  menu: "Menu"
+  close: "Close"
+  home: "Hubgentic, home"
+  optional: "optional"
+
+nav:
+  services: Services
+  method: Method
+  platform: Platform
+  faq: FAQ
+  cta: "Let's talk"
+
+hero:
+  eyebrow: "AI strategy · Agents · Ontology & memory"
+  title_a: "AI only works when it"
+  title_b: "knows your business."
+  lead: "Hubgentic helps SMEs and startups take AI from demo to production: a strategy with clear priorities, agents built on your real data and, coming soon, the ontology and memory layer that makes them reliable."
+  cta_primary: "Book an intro call"
+  cta_secondary: "Explore the platform"
+  note: "Free 30-minute call · in English or Italian"
+
+diagram:
+  aria: "Diagram: the same customer appears in four systems with different data; Hubgentic recognises them as one entity with memory and makes it available to an AI agent."
+  col_systems: SYSTEMS
+  col_ontology: ONTOLOGY
+  col_agents: AGENTS
+  systems:
+    - {name: ERP, value: "ROSSI MARIO SRL"}
+    - {name: CRM, value: "Mario Rossi"}
+    - {name: E-commerce, value: "m.rossi@rossisrl.it"}
+    - {name: Spreadsheet, value: "IT01234567890"}
+  entity_kind: CUSTOMER
+  entity_name: "Rossi Mario S.r.l."
+  entity_sources: "4 sources"
+  entity_confidence: "conf. 0.97"
+  memory_title: MEMORY
+  memory:
+    - "Order #1042 out for delivery"
+    - "Prefers email"
+  agent_kind: "AI AGENT"
+  agent_name: "Customer service"
+
+problem:
+  kicker: "The problem"
+  title: "AI agents don't fail because of the model. They fail because they don't know your data."
+  lead: "Every company keeps the same information in several systems, written in different ways. People connect the dots from experience. Agents can't."
+  items:
+    - title: "One customer, four versions"
+      body: "In the ERP it's ROSSI MARIO SRL, in the CRM Mario Rossi, in the online store an email address, in a spreadsheet a VAT number. To an agent, those are four different customers."
+    - title: "No memory"
+      body: "Every conversation starts from scratch: the agent doesn't know what was promised, decided or already solved last week."
+    - title: "No traceability"
+      body: "When an agent answers, nobody knows which system the data came from. That isn't good enough for internal controls, the EU AI Act or your customers' trust."
+
+services:
+  kicker: "What we do"
+  title: "We make your business readable by AI. Inside and out."
+  lead: "Inside, so your agents work on consistent data. Outside, so ChatGPT and other assistants find and recommend you. Four services, available today."
+  items:
+    - tag: SMEs
+      title: "AI strategy"
+      body: "From “we should do something with AI” to a plan with priorities, costs and expected returns."
+      points:
+        - "Assessment of processes, data and skills"
+        - "Use-case map, ranked by impact"
+        - "Build-vs-buy decisions and vendor selection"
+        - "Data governance and EU AI Act readiness"
+        - "Workshops for leadership and teams"
+    - tag: Startups
+      title: "Startup advisory"
+      body: "A part-time Head of AI, until you need a full-time one."
+      points:
+        - "Architecture and model selection"
+        - "Data strategy and defensibility"
+        - "Inference costs under control"
+        - "Technical review ahead of a funding round"
+    - tag: Delivery
+      title: "Agents in production"
+      body: "Agents for customer service, back office and sales, built into your systems rather than beside them."
+      points:
+        - "Integration with ERP, CRM and e-commerce"
+        - "Quality tests and metrics before go-live"
+        - "Human oversight where it matters"
+        - "Continuous monitoring after launch"
+    - tag: Visibility
+      title: "AI assistant visibility"
+      body: "Make sure ChatGPT, Perplexity, Gemini and Claude describe your business correctly, and recommend it."
+      points:
+        - "Audit of what AI says about you today"
+        - "Structured data and machine-readable content"
+        - "Benchmark against competitors"
+        - "Ongoing monitoring"
+
+method:
+  kicker: "How we work"
+  title: "Short steps, measurable results."
+  lead: "No endless projects. Every phase has a scope, a timeline and a price agreed before we start."
+  steps:
+    - meta: "30 minutes · free"
+      title: "Intro call"
+      body: "We learn where you are and what you want to achieve. If AI isn't the right answer, we'll tell you."
+    - meta: "2 weeks · fixed price"
+      title: "Assessment"
+      body: "We review your processes and data, find the best use cases and deliver a prioritised roadmap with estimates."
+    - meta: "6–8 weeks"
+      title: "Pilot"
+      body: "We put one use case into production on real data, with success metrics agreed up front."
+    - meta: "Tailored"
+      title: "Scale"
+      body: "We extend to more processes and train your team so it can run on its own."
+
+platform:
+  badge: "Coming soon"
+  kicker: "The platform"
+  title: "Ontology and memory for your agents."
+  lead: "We're building the missing layer between business systems and AI agents. Hubgentic connects your ERP, CRM and databases without moving the data, recognises the same entities across systems, keeps their memory and shows where every piece of information comes from."
+  features:
+    - title: "A shared ontology"
+      body: "One model of customers, suppliers, products and contracts, independent of the software you use."
+    - title: "Entity resolution"
+      body: "The same customer is recognised even when names, codes and emails don't match, with an explicit confidence score."
+    - title: "Memory for agents"
+      body: "Facts, decisions and interactions stay available over time, with permissions set per source."
+    - title: "Field-level provenance"
+      body: "Every answer cites the system, record and field it came from. Ready for audits."
+    - title: "Your data stays put"
+      body: "Sources are queried in real time: no copies, no migrations."
+    - title: "Open to your agents"
+      body: "Connects to the agents you already use through an API and MCP, the open standard for connecting AI models to tools and data."
+  cta: "Request early access"
+  note: "We're selecting a small group of pilot companies to build it with. Access by invitation."
+  mock:
+    aria: "Example of a unified customer record in the Hubgentic platform"
+    kind: Customer
+    name: "Rossi Mario S.r.l."
+    sources: "3 sources"
+    rows:
+      - {label: "Legal name", value: "ROSSI MARIO SRL", source: ERP, tone: s1}
+      - {label: "VAT number", value: "IT01234567890", source: ERP, tone: s1}
+      - {label: "Email", value: "m.rossi@rossisrl.it", source: CRM, tone: s2}
+      - {label: "Last order", value: "#1042 · out for delivery", source: E-commerce, tone: s3}
+    match_label: "Same entity"
+    match_rule: "VAT number + legal name"
+    match_score: "0.97"
+    memory_title: Memory
+    memory:
+      - {when: "12 Oct", text: "Asked for a volume discount, under review"}
+      - {when: "28 Oct", text: "Prefers to be contacted by email"}
+
+audience:
+  kicker: "Who it's for"
+  title: "For teams that want results, not demos."
+  items:
+    - title: SMEs
+      body: "Manufacturing, distribution and services: companies with data spread across ERP, CRM and spreadsheets that want a measurable return."
+    - title: "Early-stage startups"
+      body: "Pre-seed and seed teams building AI products who want sound technical decisions from day one."
+    - title: "Regulated industries"
+      body: "Finance, insurance and healthcare: where every agent answer must be explainable and auditable."
+  where: "Based in Italy, working with companies in Italy and abroad. In English or Italian, remotely or on site."
+
+principles:
+  kicker: "How we think"
+  title: "Four commitments, in writing."
+  items:
+    - title: "Measurable results"
+      body: "Every project starts from agreed metrics. If we can't measure it, we don't do it."
+    - title: "Vendor-independent"
+      body: "We recommend the technology that fits you best, even when it isn't ours."
+    - title: "Your data stays yours"
+      body: "Least access necessary, no unnecessary copies, GDPR-compliant."
+    - title: "Clarity"
+      body: "Fixed prices, clear timelines, no jargon."
+
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "How much does it cost?"
+      a: "The intro call is free. The assessment and the pilot have a fixed price, set after the first call based on scope. No surprises at the end of the month."
+    - q: "Do we need to move or migrate our data?"
+      a: "No. We work with the systems you already use. The platform queries your sources in real time without copying them."
+    - q: "We're a small company. Does this make sense for us?"
+      a: "Often, yes: smaller companies have shorter processes and faster decisions, and one well-chosen use case can pay for itself quickly. On the call we'll work out together whether there's a clear return. If there isn't, we'll tell you."
+    - q: "When will the platform be available?"
+      a: "It's being built with a small group of pilot companies. Request early access and we'll be in touch when new places open."
+    - q: "How do you handle the EU AI Act?"
+      a: "We help you classify your use cases, document them and put traceability and human oversight in place where required. For the legal side we work alongside your advisers."
+    - q: "Do you work outside Italy?"
+      a: "Yes. We work in English and Italian, remotely and on site when needed."
+
+contact:
+  kicker: "Contact"
+  title: "Let's talk."
+  lead: "Tell us where you are and what you want to achieve. A person, not a bot, will get back to you."
+  next_title: "What happens next"
+  next:
+    - "We read your request."
+    - "We suggest a time for a 30-minute call."
+    - "If there's a concrete use case, we send you a fixed-price proposal."
+  email_lead: "Prefer email?"
+  name: "Full name"
+  email: "Work email"
+  company: "Company"
+  segment: "You are"
+  segments:
+    - {value: pmi, label: "An SME"}
+    - {value: startup, label: "A startup"}
+    - {value: enterprise, label: "A large company"}
+    - {value: other, label: "Other"}
+  interests: "You're interested in"
+  interest_options:
+    - {value: strategy, label: "AI strategy"}
+    - {value: startup, label: "Startup advisory"}
+    - {value: agents, label: "Agents in production"}
+    - {value: visibility, label: "AI assistant visibility"}
+    - {value: platform, label: "Early access to the platform"}
+  message: "Message"
+  message_placeholder: "What's the challenge or the goal?"
+  consent_a: "I have read the "
+  consent_link: "privacy notice"
+  consent_b: "."
+  submit: "Send request"
+  sending: "Sending…"
+  error: "We couldn't send your request. Check the required fields and try again, or email us."
+
+thanks:
+  title: "Thank you, we've received your request."
+  body: "We'll reply personally to the address you gave us. If you'd like to add anything in the meantime, email"
+  back: "Back to the homepage"
+
+footer:
+  tagline: "AI strategy, agents and ontology for SMEs and startups."
+  col_site: Site
+  col_company: Hubgentic
+  contact: Contact
+  privacy: Privacy
+  login: "Platform sign-in"
+  linkedin: LinkedIn
+  rights: "All rights reserved."
+
+not_found:
+  title: "Page not found"
+  body: "The page you're looking for doesn't exist or has moved."
+  back: "Back to the homepage"
+
+privacy:
+  title: "Privacy notice"
+  updated: "Last updated: November 2026"
+  intro: "This notice explains what personal data we collect when you visit www.hubgentic.ai or write to us, why we do it and what your rights are under Regulation (EU) 2016/679 (GDPR)."
+  sections:
+    - title: "Data controller"
+      body:
+        - "The data controller is Complify PTE. LTD. (UEN 202400236R), 32 Pekin Street, Singapore, which operates the Hubgentic brand. For any privacy request, email info@hubgentic.ai."
+    - title: "What we collect"
+      body:
+        - "Contact form: your name, email, company, type of organisation, interests and the message you choose to send."
+        - "Technical data: when you visit the site, the server records technical information such as IP address, date and time of the request and browser type."
+    - title: "Why we use it and on what basis"
+      body:
+        - "To answer your request and, if you ask, prepare a proposal: steps taken at your request before entering into a contract (Art. 6(1)(b) GDPR)."
+        - "To protect the site from abuse and keep it secure: the controller's legitimate interest (Art. 6(1)(f) GDPR)."
+        - "We don't use your data for newsletters or marketing without your explicit, separate consent, and we never sell it."
+    - title: "Cookies"
+      body:
+        - "This site uses no cookies, analytics or tracking tools. Fonts are hosted on our own servers, so your visit isn't shared with third-party services."
+    - title: "Where and for how long"
+      body:
+        - "The site and form data are hosted on servers in Switzerland, a country recognised by the European Commission as providing adequate data protection."
+        - "We keep contact requests for as long as needed to handle them and no longer than 24 months after our last contact, unless the law requires otherwise. Technical logs are kept for a limited period, for security purposes only."
+    - title: "Your rights"
+      body:
+        - "You can ask at any time to access, correct, delete, restrict or port your data, or object to its processing, by emailing info@hubgentic.ai."
+        - "You also have the right to lodge a complaint with your data protection authority; in Italy, the Garante per la protezione dei dati personali (www.garanteprivacy.it)."
