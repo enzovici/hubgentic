@@ -1,0 +1,346 @@
+---
+// Netlify Forms picks this form up from the built HTML (data-netlify + name).
+// The submit request itself lives in src/lib/submit-lead.ts.
+const FORM_NAME = 'pmi-contatti';
+---
+
+<div class="form-card">
+  <form
+    id="lead-form"
+    name={FORM_NAME}
+    method="POST"
+    action="/pmi?inviato=1#contatti"
+    data-netlify="true"
+    netlify-honeypot="bot-field"
+  >
+    <input type="hidden" name="form-name" value={FORM_NAME} />
+    <p class="hp" aria-hidden="true">
+      <label>Non compilate questo campo: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+    </p>
+
+    <p class="required-note">I campi con <span aria-hidden="true">*</span> sono obbligatori.</p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="f-nome">Nome e cognome <span class="req" aria-hidden="true">*</span></label>
+        <input id="f-nome" name="nome" type="text" autocomplete="name" required aria-describedby="e-nome" data-msg-missing="Inserite nome e cognome" />
+        <p class="error" id="e-nome"></p>
+      </div>
+
+      <div class="field">
+        <label for="f-azienda">Azienda <span class="req" aria-hidden="true">*</span></label>
+        <input id="f-azienda" name="azienda" type="text" autocomplete="organization" required aria-describedby="e-azienda" data-msg-missing="Inserite il nome dell'azienda" />
+        <p class="error" id="e-azienda"></p>
+      </div>
+
+      <div class="field">
+        <label for="f-email">Email <span class="req" aria-hidden="true">*</span></label>
+        <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="e-email" data-msg-missing="Inserite il vostro indirizzo email" data-msg-invalid="Inserite un indirizzo email valido, ad esempio nome@azienda.it" />
+        <p class="error" id="e-email"></p>
+      </div>
+
+      <div class="field">
+        <label for="f-telefono">Telefono</label>
+        <input id="f-telefono" name="telefono" type="tel" autocomplete="tel" inputmode="tel" pattern={"[0-9 +.\\/\\(\\)\\-]{6,20}"} aria-describedby="e-telefono" data-msg-invalid="Inserite un numero di telefono valido, solo cifre, spazi e il prefisso +" />
+        <p class="error" id="e-telefono"></p>
+      </div>
+
+      <div class="field">
+        <label for="f-dipendenti">Numero di dipendenti <span class="req" aria-hidden="true">*</span></label>
+        <select id="f-dipendenti" name="dipendenti" required aria-describedby="e-dipendenti" data-msg-missing="Scegliete il numero di dipendenti">
+          <option value="">Scegliete</option>
+          <option>Meno di 10</option>
+          <option>10–49</option>
+          <option>50–249</option>
+          <option>Più di 250</option>
+        </select>
+        <p class="error" id="e-dipendenti"></p>
+      </div>
+
+      <div class="field">
+        <label for="f-gestionale">Gestionale che usate</label>
+        <input id="f-gestionale" name="gestionale" type="text" autocomplete="off" />
+      </div>
+
+      <div class="field full">
+        <label for="f-tempo">Dove perdete più tempo oggi?</label>
+        <textarea id="f-tempo" name="dove_perdete_tempo" rows="4"></textarea>
+      </div>
+    </div>
+
+    <div class="checks">
+      <div class="check">
+        <input id="f-partner" name="candidatura_partner" type="checkbox" value="Sì" />
+        <label for="f-partner">Vorrei candidare la mia azienda come azienda partner</label>
+      </div>
+      <div class="check">
+        <input id="f-privacy" name="privacy" type="checkbox" value="Accettata" required aria-describedby="e-privacy" data-msg-missing="Per inviare la richiesta confermate di aver letto l'informativa privacy" />
+        <label for="f-privacy">Ho letto l'<a href="/privacy">informativa privacy</a> <span class="req" aria-hidden="true">*</span></label>
+      </div>
+      <p class="error" id="e-privacy"></p>
+    </div>
+
+    <p class="error form-error" id="form-error" role="alert"></p>
+
+    <button class="btn btn-primary submit" type="submit">Prenota il primo incontro</button>
+  </form>
+
+  <div class="success" id="form-success" tabindex="-1" hidden>
+    <svg aria-hidden="true" viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="20"></circle><path d="m15 25 6 6 12-14"></path></svg>
+    <p>Grazie, vi ricontatteremo a breve.</p>
+  </div>
+</div>
+
+<script>
+  import { submitLead } from '../lib/submit-lead';
+
+  const form = document.getElementById('lead-form') as HTMLFormElement | null;
+  const success = document.getElementById('form-success') as HTMLElement | null;
+  const formError = document.getElementById('form-error') as HTMLElement | null;
+  const partnerBox = document.getElementById('f-partner') as HTMLInputElement | null;
+
+  function showSuccess() {
+    if (!form || !success) return;
+    form.hidden = true;
+    success.hidden = false;
+    success.focus();
+  }
+
+  // "Candida la vostra azienda" ticks the partner checkbox before scrolling to the form.
+  document.querySelectorAll('[data-partner-cta]').forEach((el) =>
+    el.addEventListener('click', () => {
+      if (partnerBox) partnerBox.checked = true;
+    }),
+  );
+  if (location.hash === '#candidatura' && partnerBox) partnerBox.checked = true;
+
+  // Fallback path without JavaScript: Netlify redirects back here with ?inviato=1.
+  if (new URLSearchParams(location.search).has('inviato')) showSuccess();
+
+  type Field = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+  function messageFor(field: Field): string {
+    const v = field.validity;
+    if (v.valid) return '';
+    if (v.valueMissing) return field.dataset.msgMissing ?? 'Compilate questo campo';
+    return field.dataset.msgInvalid ?? field.dataset.msgMissing ?? 'Controllate questo campo';
+  }
+
+  function check(field: Field): boolean {
+    const box = field.getAttribute('aria-describedby');
+    const out = box ? document.getElementById(box) : null;
+    const msg = messageFor(field);
+    if (msg) field.setAttribute('aria-invalid', 'true');
+    else field.removeAttribute('aria-invalid');
+    if (out) out.textContent = msg;
+    return !msg;
+  }
+
+  if (form) {
+    form.noValidate = true;
+    const fields = Array.from(form.querySelectorAll<Field>('input:not([type=hidden]):not([name=bot-field]), select, textarea'));
+
+    fields.forEach((field) => {
+      field.addEventListener('blur', () => {
+        if (field.value || field.getAttribute('aria-invalid')) check(field);
+      });
+      field.addEventListener('input', () => {
+        if (field.getAttribute('aria-invalid')) check(field);
+      });
+      field.addEventListener('change', () => {
+        if (field.getAttribute('aria-invalid')) check(field);
+      });
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (formError) formError.textContent = '';
+
+      const invalid = fields.filter((f) => !check(f));
+      if (invalid.length) {
+        invalid[0].focus();
+        return;
+      }
+
+      const button = form.querySelector<HTMLButtonElement>('button[type=submit]');
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Invio in corso…';
+      }
+      try {
+        await submitLead(form);
+        showSuccess();
+      } catch {
+        if (formError) {
+          formError.textContent =
+            "Non siamo riusciti a inviare la richiesta. Controllate la connessione e riprovate tra qualche istante.";
+        }
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.textContent = 'Prenota il primo incontro';
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  .form-card {
+    background: var(--white);
+    color: var(--body);
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
+  }
+  @media (min-width: 600px) {
+    .form-card {
+      padding: 36px 36px 40px;
+    }
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .required-note {
+    font-size: 0.875rem;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .grid {
+    display: grid;
+    gap: 18px;
+  }
+  @media (min-width: 600px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 18px 20px;
+    }
+    .full {
+      grid-column: 1 / -1;
+    }
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  label {
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--ink);
+  }
+  .req {
+    color: var(--error);
+  }
+  input[type='text'],
+  input[type='email'],
+  input[type='tel'],
+  select,
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 12px;
+    border: 1px solid #8796a5;
+    border-radius: var(--radius);
+    background: var(--white);
+    color: var(--ink);
+    font: inherit;
+    font-size: 1rem;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 110px;
+  }
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%232E6E73' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 8 5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 18px;
+    padding-right: 40px;
+  }
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid var(--teal);
+    outline-offset: 1px;
+    border-color: var(--teal);
+  }
+  [aria-invalid='true'] {
+    border-color: var(--error) !important;
+    border-width: 2px !important;
+  }
+  .error {
+    color: var(--error);
+    font-size: 0.875rem;
+    font-weight: 700;
+    min-height: 0;
+  }
+  .error:empty {
+    display: none;
+  }
+  .checks {
+    display: grid;
+    gap: 14px;
+    margin-top: 22px;
+  }
+  .check {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  .check input {
+    width: 22px;
+    height: 22px;
+    margin: 1px 0 0;
+    accent-color: var(--teal);
+  }
+  .check label {
+    font-weight: 400;
+    font-size: 1rem;
+    color: var(--body);
+  }
+  .form-error {
+    margin-top: 16px;
+  }
+  .submit {
+    margin-top: 24px;
+    width: 100%;
+  }
+  .submit:disabled {
+    opacity: 0.7;
+    cursor: progress;
+  }
+  .form-card :focus-visible {
+    outline-color: var(--teal);
+  }
+  @media (min-width: 600px) {
+    .submit {
+      width: auto;
+    }
+  }
+  .success {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px 0;
+    color: var(--teal);
+  }
+  .success[hidden] {
+    display: none;
+  }
+  .success p {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.625rem;
+    color: var(--ink);
+  }
+  .success:focus {
+    outline: none;
+  }
+</style>

@@ -1,0 +1,122 @@
+---
+import { HAS_LOGO } from '../data/site';
+
+interface Props {
+  anchorBase?: string;
+}
+const { anchorBase = '' } = Astro.props;
+
+const links = [
+  { href: '#cosa-facciamo', label: 'Cosa facciamo' },
+  { href: '#come-lavoriamo', label: 'Come lavoriamo' },
+  { href: '#aziende-partner', label: 'Aziende partner' },
+  { href: '#domande', label: 'Domande' },
+];
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a class="brand" href="/pmi" aria-label="Hubgentic, torna all'inizio della pagina">
+      {
+        HAS_LOGO ? (
+          <picture>
+            <source type="image/avif" srcset="/img/logo.avif 1x, /img/logo@2x.avif 2x" />
+            <source type="image/webp" srcset="/img/logo.webp 1x, /img/logo@2x.webp 2x" />
+            <img src="/img/logo.png" srcset="/img/logo@2x.png 2x" width="178" height="40" alt="Hubgentic" />
+          </picture>
+        ) : (
+          /* TODO(asset): fallback wordmark until assets/Hubgentic_logo_light.png is added and `npm run assets` is run. */
+          <span class="wordmark">Hubgentic</span>
+        )
+      }
+    </a>
+    <nav class="nav" aria-label="Sezioni della pagina">
+      <ul>
+        {
+          links.map((l) => (
+            <li>
+              <a href={`${anchorBase}${l.href}`}>{l.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <a class="btn btn-primary btn-sm cta" href={`${anchorBase}#contatti`}>Prenota un incontro</a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--white);
+    border-bottom: 1px solid var(--rule);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: var(--header-h);
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 1;
+    min-width: 0;
+    text-decoration: none;
+  }
+  .brand img {
+    height: 32px;
+    width: auto;
+  }
+  .wordmark {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--navy);
+  }
+  .nav {
+    display: none;
+    margin-left: auto;
+  }
+  .nav ul {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav a {
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 0.9875rem;
+    padding: 10px 0;
+  }
+  .nav a:hover {
+    color: var(--teal);
+    text-decoration: underline;
+  }
+  .cta {
+    margin-left: auto;
+    white-space: nowrap;
+  }
+  @media (min-width: 380px) {
+    .brand img {
+      height: 36px;
+    }
+  }
+  @media (min-width: 768px) {
+    .brand img {
+      height: 40px;
+    }
+  }
+  @media (min-width: 960px) {
+    .nav {
+      display: block;
+    }
+    .cta {
+      margin-left: 12px;
+    }
+  }
+</style>

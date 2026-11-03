@@ -1,0 +1,19 @@
+{
+  "name": "hubgentic-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "assets": "node scripts/prepare-assets.mjs",
+    "og": "node scripts/og-image.mjs",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.18.2"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1",
+    "sharp": "^0.35.5"
+  }
+}
